@@ -14,7 +14,7 @@ export class PostService {
     return [...this.posts];
   }
 
-  // OBSERVER
+  // OBSERVABLE
   // ova funkcija je triger na promjene u post podacima
   getPostUpdateListener() {
     // ako se mijenja vrijednost postupdate, salje signal
@@ -29,6 +29,8 @@ export class PostService {
       content: content,
     };
     this.posts.push(post);
+
+    // šaljemo podatak u program sa next....
     this.postUpdated.next([...this.posts]);
   }
 }
