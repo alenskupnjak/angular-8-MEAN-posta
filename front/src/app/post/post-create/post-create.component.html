@@ -1,15 +1,33 @@
 <mat-card>
-  <form action="">
+  <form (submit)="onAddPost(postForm)" #postForm="ngForm">
     <mat-form-field>
-      <input matInput type="text" [(ngModel)]="enteredTitle">
+      <input
+        matInput
+        type="text"
+        name="title"
+        ngModel
+        required
+        #titleInput="ngModel">
+        <mat-error *ngIf="titleInput.invalid">Upisite vrijednost</mat-error>
     </mat-form-field>
     <mat-form-field>
       <!-- property binding:  [value]="newPost" -->
       <!-- <textarea matInput name="text1" id="txt1" cols="30" rows="10" [value]="newPost" #postInput></textarea> -->
 
       <!-- [(ngModel)] radi samo sa FormsModule, 2 way binding-->
-      <textarea matInput name="text2" id="txt2" cols="30" rows="10" [(ngModel)]="enteredContent"></textarea>
+      <textarea
+      matInput
+      name="content"
+      cols="30"
+      rows="10"
+      ngModel
+      required
+      #contentInput="ngModel"></textarea>
+      <mat-error *ngIf="contentInput.invalid">Upisite vrijednost</mat-error>
     </mat-form-field>
-    <button mat-raised-button color="primary" (click)="onAddPost()">Snimi post</button>
+    <button
+      mat-raised-button
+      color="primary"
+      type="submit">Snimi post</button>
   </form>
 </mat-card>

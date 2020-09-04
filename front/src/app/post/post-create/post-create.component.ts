@@ -1,5 +1,6 @@
 import { Component, OnInit, EventEmitter, Output } from "@angular/core";
 import { Post } from '../post.model'
+import { NgForm } from '@angular/forms';
 
 @Component({
   selector: "app-post-create",
@@ -17,11 +18,18 @@ export class PostCreateComponent implements OnInit {
   constructor() {}
 
   // methods....
-  onAddPost() {
+  onAddPost(postForm:NgForm) {
+
+    if (postForm.invalid) {
+      return;
+    }
+
+    console.log(postForm);
+
     // kreiramo zapis koji cemo poslati u listu
     const post: Post = {
-      title: this.enteredTitle,
-      content: this.enteredContent,
+      title: postForm.value.title,
+      content: postForm.value.content,
     };
 
     // saljemo zapis u program
