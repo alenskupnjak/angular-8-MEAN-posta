@@ -1,0 +1,14 @@
+<!-- property binding:  [value]="newPost" -->
+<textarea name="text1" id="txt1" cols="30" rows="10" [value]="newPost" #postInput></textarea>
+
+<!-- [(ngModel)] radi samo sa FormsModule, 2 way binding-->
+<textarea name="text2" id="txt2" cols="30" rows="10" [(ngModel)]="enteredValue"></textarea>
+
+<!-- (click) ugradena funkcija angulara -->
+<button (click)="onAddPost(postInput)">Snimi post</button>
+
+
+<!-- {{string interpolation}} -->
+<p>{{newPost}}</p>
+<p>{{enteredValue}}</p>
+
