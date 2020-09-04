@@ -1,6 +1,6 @@
-import { Component, OnInit, EventEmitter, Output } from "@angular/core";
-import { Post } from '../post.model'
-import { NgForm } from '@angular/forms';
+import { Component, OnInit } from "@angular/core";
+import { NgForm } from "@angular/forms";
+import { PostService } from "../post.service";
 
 @Component({
   selector: "app-post-create",
@@ -12,28 +12,18 @@ export class PostCreateComponent implements OnInit {
   enteredTitle: string;
   enteredContent: string;
 
-  // šalje podatak u program  <app-post-create .....> Samo tamo se može slati podatak
-  @Output() postaOdlazna = new EventEmitter<Post>();
-
-  constructor() {}
+  constructor(public postService: PostService) {}
 
   // methods....
-  onAddPost(postForm:NgForm) {
-
+  onAddPost(postForm: NgForm) {
     if (postForm.invalid) {
       return;
     }
-
-    console.log(postForm);
-
-    // kreiramo zapis koji cemo poslati u listu
-    const post: Post = {
-      title: postForm.value.title,
-      content: postForm.value.content,
-    };
-
     // saljemo zapis u program
-    this.postaOdlazna.emit(post);
+    this.postService.addPost(postForm.value.title, postForm.value.content);
+
+    // cistimo podatke iz forme
+    postForm.resetForm();
   }
 
   ngOnInit() {}

@@ -1,8 +1,5 @@
 <app-header></app-header>
 <main>
-  <!-- (dolazi podatak) -->
-  <app-post-create (postaOdlazna)="onPostAdded($event)">Loading</app-post-create>
-  <!-- [odlazni podatak] -->
-  <!-- Angular sam detektira promjenu vrijednosti 'svaPosta'  prosljeduje podatak i app-post-list-->
-  <app-post-list [postaUlazna]="svaPosta"></app-post-list>
+  <app-post-create >Loading</app-post-create>
+  <app-post-list ></app-post-list>
 </main>

@@ -7,7 +7,6 @@
         name="title"
         ngModel
         required
-        placeholder="Title"
         #titleInput="ngModel">
         <mat-error *ngIf="titleInput.invalid">Upisite vrijednost</mat-error>
     </mat-form-field>
@@ -23,7 +22,6 @@
       rows="10"
       ngModel
       required
-      placeholder="Content"
       #contentInput="ngModel"></textarea>
       <mat-error *ngIf="contentInput.invalid">Upisite vrijednost</mat-error>
     </mat-form-field>

@@ -1,6 +1,4 @@
 import { Component } from "@angular/core";
-import { Post } from "./post/post.model";
-
 
 @Component({
   selector: "app-root",
@@ -9,12 +7,5 @@ import { Post } from "./post/post.model";
 })
 export class AppComponent {
   title = "angular8";
-  //  dodatkom [] definiramo da imamo polje takvih podataka
-  svaPosta: Post [] = [];
 
-
-  onPostAdded(event) {
-    console.log("post=", event);
-    this.svaPosta.push(event);
-  }
 }
