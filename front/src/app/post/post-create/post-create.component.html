@@ -1,16 +1,15 @@
 <mat-card>
-  <mat-form-field>
-    <!-- property binding:  [value]="newPost" -->
-    <!-- <textarea matInput name="text1" id="txt1" cols="30" rows="10" [value]="newPost" #postInput></textarea> -->
+  <form action="">
+    <mat-form-field>
+      <input matInput type="text" [(ngModel)]="enteredTitle">
+    </mat-form-field>
+    <mat-form-field>
+      <!-- property binding:  [value]="newPost" -->
+      <!-- <textarea matInput name="text1" id="txt1" cols="30" rows="10" [value]="newPost" #postInput></textarea> -->
 
-    <!-- [(ngModel)] radi samo sa FormsModule, 2 way binding-->
-    <textarea matInput name="text2" id="txt2" cols="30" rows="10" [(ngModel)]="enteredValue"></textarea>
-
-    <!-- (click) ugradena funkcija angulara -->
-
-
-    <!-- {{string interpolation}} -->
-    <p>{{enteredValue}}</p>
-  </mat-form-field>
-  <button mat-raised-button color="primary" (click)="onAddPost()">Snimi post</button>
+      <!-- [(ngModel)] radi samo sa FormsModule, 2 way binding-->
+      <textarea matInput name="text2" id="txt2" cols="30" rows="10" [(ngModel)]="enteredContent"></textarea>
+    </mat-form-field>
+    <button mat-raised-button color="primary" (click)="onAddPost()">Snimi post</button>
+  </form>
 </mat-card>

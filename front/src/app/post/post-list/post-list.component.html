@@ -1,0 +1,14 @@
+<mat-accordion multi="true" *ngIf="postaUlazna.length >0">
+  <mat-expansion-panel *ngFor="let data of postaUlazna">
+    <mat-panel-title>
+      {{ data.title}}
+    </mat-panel-title>
+    <mat-expansion-panel-header>
+      <mat-panel-description>
+        {{ data.content}}
+      </mat-panel-description>
+    </mat-expansion-panel-header>
+  </mat-expansion-panel>
+</mat-accordion>
+
+<p class="info mat-body-1" *ngIf="postaUlazna.length <= 0" >Jos nema podataka</p>

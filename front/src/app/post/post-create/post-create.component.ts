@@ -1,4 +1,5 @@
-import { Component, OnInit } from "@angular/core";
+import { Component, OnInit, EventEmitter, Output } from "@angular/core";
+import { Post } from '../post.model'
 
 @Component({
   selector: "app-post-create",
@@ -6,21 +7,25 @@ import { Component, OnInit } from "@angular/core";
   styleUrls: ["./post-create.component.css"],
 })
 export class PostCreateComponent implements OnInit {
-  // property name
-  newPost = "Nema sadtzaja";
-  enteredValue: string;
+  // property ...
+  enteredTitle: string;
+  enteredContent: string;
+
+  // šalje podatak u program  <app-post-create .....> Samo tamo se može slati podatak
+  @Output() postaOdlazna = new EventEmitter<Post>();
 
   constructor() {}
 
   // methods....
-  onAddPost(postInput: HTMLTextAreaElement) {
-    console.log(postInput);
-    console.dir(postInput);
-    console.log(this.enteredValue);
-    this.newPost = postInput.value;
-    setTimeout(() => {
-      this.newPost = this.enteredValue;
-    }, 3000);
+  onAddPost() {
+    // kreiramo zapis koji cemo poslati u listu
+    const post: Post = {
+      title: this.enteredTitle,
+      content: this.enteredContent,
+    };
+
+    // saljemo zapis u program
+    this.postaOdlazna.emit(post);
   }
 
   ngOnInit() {}
