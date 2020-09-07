@@ -73,17 +73,24 @@ export class PostService {
       });
   }
 
+  // dohvacane jednog posta preko ID
+  getPost(id: string) {
+    return this.posts.find((data) => {
+      return data.id === id;
+    });
+  }
+
   // brisanje zapisa iz baze
   postDelete(id: string) {
-    console.log('  postDelete ID =', id);
+    console.log("  postDelete ID =", id);
 
     console.log(`http://localhost:4401/api/posts/${id}`);
-    console.log('http://localhost:4401/api/posts/' + id);
+    console.log("http://localhost:4401/api/posts/" + id);
 
     this.http
-      .delete('http://localhost:4401/api/posts/' + id)
+      .delete("http://localhost:4401/api/posts/" + id)
       .subscribe((data) => {
-        console.log('Podatak obrisan');
+        console.log("Podatak obrisan");
         this.getPosts();
       });
   }
