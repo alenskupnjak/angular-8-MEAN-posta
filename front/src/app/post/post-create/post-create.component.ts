@@ -2,7 +2,6 @@ import { Component, OnInit } from "@angular/core";
 import { NgForm } from "@angular/forms";
 import { PostService } from "../post.service";
 
-
 @Component({
   selector: "app-post-create",
   templateUrl: "./post-create.component.html",
@@ -22,7 +21,6 @@ export class PostCreateComponent implements OnInit {
     }
     // saljemo zapis u program
     this.postService.addPost(postForm.value.title, postForm.value.content);
-
 
     // cistimo podatke iz forme
     postForm.resetForm();
