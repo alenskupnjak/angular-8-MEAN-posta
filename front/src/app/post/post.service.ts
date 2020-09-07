@@ -44,9 +44,15 @@ export class PostService {
       title: title,
       content: content,
     };
-    this.posts.push(post);
+    this.http
+      .post<{ message: string }>("http://localhost:4401/api/posts", post)
+      .subscribe((data) => {
+        console.log(data.message);
+        console.log(data);
 
-    // šaljemo podatak u program sa next....
-    this.postUpdated.next([...this.posts]);
+        this.posts.push(post);
+        // šaljemo podatak u program sa next....
+        this.postUpdated.next([...this.posts]);
+      });
   }
 }

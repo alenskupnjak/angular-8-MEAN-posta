@@ -1,7 +1,7 @@
 const express = require('express');
 const path = require('path');
 const dotenv = require('dotenv'); // Load config file
-const bodyParser = require('body-parser');
+const bodyParser = require('body-parser'); // Body parser, bez ovoga ne mozemo slati podatke u req.body
 const mongoose = require('mongoose');
 const colors = require('colors');
 // const cookieParser = require('cookie-parser');
@@ -20,6 +20,13 @@ const colors = require('colors');
 
 // START express (NODE), inicijalizacija aplikacije
 const app = express();
+
+// Body parser, bez ovoga ne mozemo slati podatke u req.body , starija verzija!!!!!
+// app.use(express.json());
+// // isto kao i app.use(express.json());  nova verzija
+app.use(bodyParser.json());
+// body -parser, bez ovoga ne salje podatke automatski kroz req.body (npm i body-parser)
+app.use(bodyParser.urlencoded({ extended: false }));
 
 // definiramo path za file u koji spremamo potrebne varijable
 dotenv.config({ path: '.vscode/config.env' });
@@ -75,6 +82,17 @@ app.use((req, res, next) => {
   next();
 });
 
+// POST
+app.post('/api/posts', (req, res, next) => {
+  const post = req.body;
+  console.log(req.body);
+  res.status(201).json({
+    message: 'Uspjeh',
+    data: post,
+  });
+});
+
+// GET (ist kao i use get)
 app.use('/api/posts', (req, res, next) => {
   posts = [
     { id: '01', title: 'Naslov 01', content: 'sadrzaj 01' },
@@ -106,14 +124,6 @@ console.log(colors.bgRed('START START START'));
 // app.set('view engine', 'ejs'); // za ejs
 // // kreiramo stazu odakle cemo vuci template
 // app.set('views', path.join(__dirname, 'views'));
-
-// Body parser, bez ovoga ne mozemo slati podatke u req.body , starija verzija!!!!!
-// app.use(express.json());
-// // isto kao i app.use(express.json());  nova verzija
-app.use(bodyParser.json());
-
-// body -parser, bez ovoga ne salje podatke automatski kroz req.body (npm i body-parser)
-app.use(bodyParser.urlencoded({ extended: false }));
 
 // // Cookie parser, za slanje TOKENA
 // app.use(cookieParser());
