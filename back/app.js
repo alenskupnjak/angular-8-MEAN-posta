@@ -85,7 +85,7 @@ app.use((req, res, next) => {
   next();
 });
 
-// POST
+// POST, dodavanje zappisa u BAZU
 app.post('/api/posts', (req, res, next) => {
   // kreiramo post
   const post = new Post({
@@ -104,17 +104,15 @@ app.post('/api/posts', (req, res, next) => {
 });
 
 // GET (ist kao i use get)
-app.use('/api/posts', (req, res, next) => {
+app.get('/api/posts', (req, res, next) => {
   // posts = [
   //   { id: '01', title: 'Naslov 01', content: 'sadrzaj 01' },
   //   { id: '02', title: 'Naslov 02', content: 'sadrzaj 02' },
   //   { id: '03', title: 'Naslov 03', content: 'sadrzaj 03' },
   // ];
   posts = [];
-
   Post.find()
     .then((dataPosts) => {
-      console.log(dataPosts);
       res.status(200).json({
         message: 'Uspjeh',
         posts: dataPosts,
@@ -125,6 +123,29 @@ app.use('/api/posts', (req, res, next) => {
     });
 });
 
+// DELETE POST
+app.delete('/api/posts/:id', (req, res, next) => {
+  console.log(req.params.id);
+  Post.find({ _id: req.params.id })
+    .then((data) => {
+      console.log('data', data);
+      return data[0].id;
+    })
+    .then((data) => {
+      console.log(data);
+      Post.deleteOne({ _id: data }).then((data) => {
+        console.log('Posta obrisana BACKEND');
+        res.status(200).json({
+          message: ' Posta uspješno obrisana',
+        });
+      });
+    })
+    .catch((err) => {
+      console.log(err);
+    });
+});
+
+// pokusni middeleware
 app.use((req, res, next) => {
   req.pozdravnaporuka = 'pocetna vrijednost';
   res.postman = req.body;
