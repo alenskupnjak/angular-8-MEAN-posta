@@ -1,19 +1,35 @@
 import { Post } from "./post.model";
 import { Subject } from "rxjs";
+import { HttpClient } from "@angular/common/http";
+import { Injectable } from "@angular/core";
+// import { HttpClientModule } from '@angular/common/http';
 
+@Injectable() // ovo mora biti za provider !!!!
 export class PostService {
   // osnovno polje iz kojeg vučemo podatke
-  posts: Post[] = [];
+  private posts: Post[] = [];
 
   // OBSERVABLE  ---kojim cemo slati obavijest o promjeni podatka kroz program
   private postUpdated = new Subject<Post[]>();
 
+  constructor(public http: HttpClient) {}
+
   // dohvacanje svih podataka
   getPosts() {
     // uvijek radis kopiju polja
-    return [...this.posts];
+    // return [...this.posts];
+    this.http
+      // <{ definiramo ulazne vrijednosti kje ce biti kao objekt}>
+      .get<{ message: string; posts: Post[] }>(
+        "http://localhost:4401/api/posts"
+      )
+      .subscribe((dataPost) => {
+        console.log(dataPost);
+        this.posts = dataPost.posts;
+        // saljemo signap u program...
+        this.postUpdated.next([...this.posts]);
+      });
   }
-
 
   // OBSERVABLE - ova funkcija je triger na promjene u post podacima
   getPostUpdateListener() {
@@ -21,11 +37,10 @@ export class PostService {
     return this.postUpdated.asObservable();
   }
 
-
   // dodavanje novog zapisa
   addPost(title: string, content: string) {
     const post: Post = {
-      id:null,
+      id: null,
       title: title,
       content: content,
     };

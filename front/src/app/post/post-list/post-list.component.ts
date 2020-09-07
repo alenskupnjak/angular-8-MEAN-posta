@@ -20,8 +20,8 @@ export class PostListComponent implements OnInit, OnDestroy {
   // methods....
   ngOnInit() {
     // u prvom prolazu dohvaca podatke ako ih ima
-    this.postaUlazna = this.postService.getPosts();
-
+    // this.postaUlazna = this.postService.getPosts(); // verzija 1
+    this.postService.getPosts();
 
     // OBSERVER- slušamo promjenu podataka
     this.postsSub = this.postService

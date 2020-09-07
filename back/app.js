@@ -68,7 +68,10 @@ app.use((req, res, next) => {
     'Access-Control-Allow-Methods',
     'OPTIONS, GET, POST, PUT, PATCH, DELETE'
   );
-  res.setHeader('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept');
+  res.setHeader(
+    'Access-Control-Allow-Headers',
+    'Origin, X-Requested-With, Content-Type, Accept'
+  );
   next();
 });
 
@@ -108,8 +111,6 @@ console.log(colors.bgRed('START START START'));
 // app.use(express.json());
 // // isto kao i app.use(express.json());  nova verzija
 app.use(bodyParser.json());
-
-
 
 // body -parser, bez ovoga ne salje podatke automatski kroz req.body (npm i body-parser)
 app.use(bodyParser.urlencoded({ extended: false }));
