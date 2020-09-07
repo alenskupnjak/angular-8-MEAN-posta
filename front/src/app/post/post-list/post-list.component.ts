@@ -25,7 +25,7 @@ export class PostListComponent implements OnInit, OnDestroy {
 
     // OBSERVER- slušamo promjenu podataka
     this.postsSub = this.postService
-      .getPostUpdateListener()
+      .getPostUpdateListener() // ovo predstavlja okidač za promjenu na ekranu
       .subscribe((posts: Post[]) => {
         this.postaUlazna = posts;
       });

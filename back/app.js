@@ -4,6 +4,9 @@ const dotenv = require('dotenv'); // Load config file
 const bodyParser = require('body-parser'); // Body parser, bez ovoga ne mozemo slati podatke u req.body
 const mongoose = require('mongoose');
 const colors = require('colors');
+
+const Post = require('./models/post');
+
 // const cookieParser = require('cookie-parser');
 // const mongoSanitize = require('express-mongo-sanitize');
 // const helmet = require('helmet');
@@ -84,8 +87,16 @@ app.use((req, res, next) => {
 
 // POST
 app.post('/api/posts', (req, res, next) => {
-  const post = req.body;
-  console.log(req.body);
+  // kreiramo post
+  const post = new Post({
+    title: req.body.title,
+    content: req.body.content,
+  });
+
+  // snimimo podatak u BAZU
+  post.save();
+
+  console.log(post);
   res.status(201).json({
     message: 'Uspjeh',
     data: post,
@@ -94,15 +105,24 @@ app.post('/api/posts', (req, res, next) => {
 
 // GET (ist kao i use get)
 app.use('/api/posts', (req, res, next) => {
-  posts = [
-    { id: '01', title: 'Naslov 01', content: 'sadrzaj 01' },
-    { id: '02', title: 'Naslov 02', content: 'sadrzaj 02' },
-    { id: '03', title: 'Naslov 03', content: 'sadrzaj 03' },
-  ];
-  res.status(200).json({
-    message: 'Uspjeh',
-    posts: posts,
-  });
+  // posts = [
+  //   { id: '01', title: 'Naslov 01', content: 'sadrzaj 01' },
+  //   { id: '02', title: 'Naslov 02', content: 'sadrzaj 02' },
+  //   { id: '03', title: 'Naslov 03', content: 'sadrzaj 03' },
+  // ];
+  posts = [];
+
+  Post.find()
+    .then((dataPosts) => {
+      console.log(dataPosts);
+      res.status(200).json({
+        message: 'Uspjeh',
+        posts: dataPosts,
+      });
+    })
+    .catch((err) => {
+      console.log(err);
+    });
 });
 
 app.use((req, res, next) => {

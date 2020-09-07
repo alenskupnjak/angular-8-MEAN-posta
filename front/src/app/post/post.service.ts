@@ -14,7 +14,7 @@ export class PostService {
 
   constructor(public http: HttpClient) {}
 
-  // dohvacanje svih podataka
+
   getPosts() {
     // uvijek radis kopiju polja
     // return [...this.posts];
