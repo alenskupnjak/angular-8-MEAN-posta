@@ -16,6 +16,7 @@ import { PostCreateComponent } from "./post/post-create/post-create.component";
 import { HeaderComponent } from "./header/header.component";
 import { PostListComponent } from "./post/post-list/post-list.component";
 import { PostService } from "./post/post.service";
+import { AppRoutingModule } from './app-routing.module';
 
 @NgModule({
   declarations: [
@@ -26,6 +27,7 @@ import { PostService } from "./post/post.service";
   ],
   imports: [
     BrowserModule,
+    AppRoutingModule,  // za router
     FormsModule, // za  [(ngModel)]
     BrowserAnimationsModule, // material
     MatInputModule, // omogučava nam pristup komponentama
