@@ -30,6 +30,8 @@ export class PostListComponent implements OnInit, OnDestroy {
     this.postsSub = this.postService
       .getPostUpdateListener() // ovo predstavlja okidač za promjenu na ekranu
       .subscribe((posts: Post[]) => {
+        // promjena ceijednosti postaUlazna koja je u HTML templatu
+        // angular automatski renderira stranicu ponovo
         this.postaUlazna = posts;
       });
     setTimeout(() => {

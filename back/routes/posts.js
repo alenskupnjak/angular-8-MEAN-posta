@@ -2,9 +2,6 @@ const express = require('express');
 const Post = require('../models/post');
 const router = express.Router();
 
-
-
-
 //
 // POST, dodavanje zappisa u BAZU
 router.post('', (req, res, next) => {
