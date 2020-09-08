@@ -26,9 +26,6 @@ export class PostReactiveComponent implements OnInit {
   // inicijalizacija
   ngOnInit() {
     this.isLoading = true; // definiranje spinerra
-
-    // provjera dali radi
-    setTimeout(() => {
       // kreiramo formu
       this.form = new FormGroup({
         title: new FormControl(null, {
@@ -63,7 +60,7 @@ export class PostReactiveComponent implements OnInit {
         }
         this.isLoading = false;
       });
-    }, 500);
+
   }
 
   // Dodavanje pošte ba listu
@@ -76,15 +73,15 @@ export class PostReactiveComponent implements OnInit {
 
     if (this.mode === "create") {
       // kreiramo zapis u program
-      this.postService.addPost(this.form.value.title, this.form.value.content);
+      this.postService.addPost(this.form.value.title, this.form.value.content, this.form.value.image);
       this.isLoading = false; // definiranje spinerra
     } else {
       // update
-      this.postService.updatePost(
-        this.postId,
-        this.form.value.title,
-        this.form.value.content
-      );
+      // this.postService.updatePost(
+      //   this.postId,
+      //   this.form.value.title,
+      //   this.form.value.content
+      // );
       this.isLoading = false; // definiranje spinerra
     }
     this.form.reset(); // reset forme

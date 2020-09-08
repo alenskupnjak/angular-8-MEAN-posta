@@ -7,6 +7,7 @@ const colors = require('colors');
 
 
 
+
 // const cookieParser = require('cookie-parser');
 // const mongoSanitize = require('express-mongo-sanitize');
 // const helmet = require('helmet');
@@ -30,6 +31,9 @@ const app = express();
 app.use(bodyParser.json());
 // body -parser, bez ovoga ne salje podatke automatski kroz req.body (npm i body-parser)
 app.use(bodyParser.urlencoded({ extended: false }));
+
+// ako udes u path sa slikama /images, idi na stazu
+app.use('/images', express.static(path.join(__dirname, 'images')));
 
 // definiramo path za file u koji spremamo potrebne varijable
 dotenv.config({ path: '.vscode/config.env' });
@@ -84,11 +88,6 @@ app.use((req, res, next) => {
   );
   next();
 });
-
-
-
-
-
 
 
 
@@ -153,7 +152,7 @@ console.log(colors.bgRed('START START START'));
 // Enable CORS
 // app.use(cors());
 
-// Set static folder
+// Set static folder, folder gdje se spremaju svi fileovi
 app.use(express.static(path.join(__dirname, 'public')));
 
 // // Mount routers

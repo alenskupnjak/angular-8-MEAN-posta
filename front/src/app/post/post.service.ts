@@ -4,7 +4,6 @@ import { HttpClient } from "@angular/common/http";
 import { Injectable } from "@angular/core";
 import { map } from "rxjs/operators";
 import { Router } from "@angular/router";
-// import { HttpClientModule } from '@angular/common/http';
 
 @Injectable() // ovo mora biti za provider !!!!
 export class PostService {
@@ -16,6 +15,8 @@ export class PostService {
 
   constructor(public http: HttpClient, private router: Router) {}
 
+
+  //
   // povlačenje podataka sa mreže
   getPosts() {
     // uvijek radis kopiju polja
@@ -35,6 +36,7 @@ export class PostService {
               title: data.title,
               content: data.content,
               id: data._id,
+              imagePath: data.imagePath
             };
           });
         })
@@ -55,15 +57,32 @@ export class PostService {
   }
 
   // dodavanje novog zapisa
-  addPost(title: string, content: string) {
-    const post: Post = {
-      id: null,
-      title: title,
-      content: content,
-    };
+  addPost(title: string, content: string, image: File) {
+    // const post: Post = {
+    //   id: null,
+    //   title: title,
+    //   content: content,
+    // };
+    const postData = new FormData(); // JS object
+    postData.append("title", title);
+    postData.append("content", content);
+    postData.append("image", image, title);
+
     this.http
-      .post<{ message: string }>("http://localhost:4401/api/posts", post)
+      .post<{ message: string; podatak: Post }>(
+        "http://localhost:4401/api/posts",
+        postData
+      )
       .subscribe((data) => {
+        console.log("data koji dobivam=", data);
+        // let id = data.podatak._id;
+
+        const post: Post = {
+          id: data.podatak.id,
+          title: title,
+          content: content,
+          imagePath: data.podatak.imagePath,
+        };
         console.log(data);
 
         this.posts.push(post);
@@ -71,7 +90,7 @@ export class PostService {
         this.postUpdated.next([...this.posts]);
         // this.getPosts(); staro rijesenje
         // vracamo na listu svih postova
-        this.router.navigate(['/'])
+        this.router.navigate(["/"]);
       });
   }
 
@@ -83,19 +102,20 @@ export class PostService {
   }
 
   // UPDATE post
-  updatePost(id: string, title: string, content: string) {
+  updatePost(id: string, title: string, content: string, imagePath: null) {
     // kreiramo novi post koji ce pregaziti postojeci zapis u bazi
     const post: Post = {
       id: id,
       title: title,
       content: content,
+      imagePath: imagePath,
     };
     this.http
       .put("http://localhost:4401/api/posts/" + id, post)
       .subscribe((res) => {
-        console.log('Update',res);
+        console.log("Update", res);
         // vracamo na listu svih postova
-        this.router.navigate(['/'])
+        this.router.navigate(["/"]);
       });
   }
 

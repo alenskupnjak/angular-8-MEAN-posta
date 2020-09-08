@@ -1,24 +1,83 @@
 const express = require('express');
 const Post = require('../models/post');
 const router = express.Router();
+const multer = require('multer');
+
+const MIME_TYPE_MAP = {
+  'image/png': 'png',
+  'image/jpeg': 'jpg',
+  'image/jpg': 'jpg',
+};
+
+//
+// MULER MULTER
+// za spremanje fileova
+const storage = multer.diskStorage({
+  destination: (req, file, cb) => {
+    console.log('LALALAL');
+
+    // podesavamo da vidimo dali je file ispravne extenzije
+    const isValid = MIME_TYPE_MAP[file.mimetype];
+    let error = new Error('Invalid mime type');
+    // ako je pronasao jedno od navedenih 3 extenzija, SET error = null
+    if (isValid) {
+      error = null;
+    }
+    cb(null, 'images');
+  },
+  filename: (req, file, cb) => {
+    console.log('tu sam -------------------');
+    const name = file.originalname.toLowerCase().split(' ').join('-');
+    const ext = MIME_TYPE_MAP[file.mimetype];
+    console.log('ime=', name + '-' + '.' + ext);
+    cb(null, name + '-' + '.' + ext);
+  },
+});
+
+// // MULER MULTER MULER MULTER
+// // filtriramo extenzije slika koje mozemo koristiti u programu
+// const fileFilter = (req, file, cb) => {
+//   if (
+//     file.mimetype === 'image/png' ||
+//     file.mimetype === 'image/jpg' ||
+//     file.mimetype === 'image/jpeg'
+//   ) {
+//     cb(null, true);
+//   } else {
+//     cb(null, false);
+//   }
+// };
 
 //
 // POST, dodavanje zappisa u BAZU
-router.post('', (req, res, next) => {
-  // kreiramo post
-  const post = new Post({
-    title: req.body.title,
-    content: req.body.content,
-  });
+router.post(
+  '',
+  multer({ storage: storage }).single('image'),
+  (req, res, next) => {
+    const url = req.protocol + '://' + req.get('host');
+    console.log(req.body);
 
-  // snimimo podatak u BAZU
-  post.save();
+    // kreiramo post
+    const post = new Post({
+      title: req.body.title,
+      content: req.body.content,
+      imagePath: url + '/images/' + req.file.filename,
+    });
 
-  res.status(201).json({
-    message: 'Uspjeh',
-    data: post,
-  });
-});
+    // snimimo podatak u BAZU
+    post.save().then((createdPost) => {
+      res.status(201).json({
+        message: 'Uspjeh',
+        podatak: {
+          id: createdPost._id,
+          title: createdPost.title,
+          content: createdPost.content,
+          imagePath: createdPost.imagePath,
+        },
+      });
+    });
+  }
+);
 
 //
 // PUT

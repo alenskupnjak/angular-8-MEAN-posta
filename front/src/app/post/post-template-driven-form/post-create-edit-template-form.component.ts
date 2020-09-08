@@ -53,15 +53,19 @@ export class PostCreateEditTemplateFormComponent implements OnInit {
 
     if (this.mode === "create") {
       // kreiramo zapis u program
-      this.postService.addPost(postForm.value.title, postForm.value.content);
+      this.postService.addPost(
+        postForm.value.title,
+        postForm.value.content,
+        postForm.value.image
+      );
       this.isLoading = false; // definiranje spinerra
     } else {
       // update
-      this.postService.updatePost(
-        this.postId,
-        postForm.value.title,
-        postForm.value.content
-      );
+      // this.postService.updatePost(
+      //   this.postId,
+      //   postForm.value.title,
+      //   postForm.value.content
+      // );
       this.isLoading = false; // definiranje spinerra
     }
 
@@ -69,12 +73,12 @@ export class PostCreateEditTemplateFormComponent implements OnInit {
     postForm.resetForm();
   }
 
-    //Image filePicker
-    onImagePicked(event: Event) {
-      const file = (event.target as HTMLInputElement).files[0];
-      // this.form.patchValue({ image: file });
-      // this.form.get("image").updateValueAndValidity();
-      console.log(file);
-      // console.log(this.form);
-    }
+  //Image filePicker
+  onImagePicked(event: Event) {
+    const file = (event.target as HTMLInputElement).files[0];
+    // this.form.patchValue({ image: file });
+    // this.form.get("image").updateValueAndValidity();
+    console.log(file);
+    // console.log(this.form);
+  }
 }
