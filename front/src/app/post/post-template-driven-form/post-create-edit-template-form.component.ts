@@ -68,4 +68,13 @@ export class PostCreateEditTemplateFormComponent implements OnInit {
     // cistimo podatke iz forme
     postForm.resetForm();
   }
+
+    //Image filePicker
+    onImagePicked(event: Event) {
+      const file = (event.target as HTMLInputElement).files[0];
+      // this.form.patchValue({ image: file });
+      // this.form.get("image").updateValueAndValidity();
+      console.log(file);
+      // console.log(this.form);
+    }
 }

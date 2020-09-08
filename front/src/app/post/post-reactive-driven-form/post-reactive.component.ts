@@ -17,7 +17,7 @@ export class PostReactiveComponent implements OnInit {
   post: Post; // mora biti javan podatak da bi ga vidio HTML
   private mode = "create";
   private postId: string;
-  form: FormGroup;  // definirana forma
+  form: FormGroup; // definirana forma
 
   constructor(public postService: PostService, public route: ActivatedRoute) {}
 
@@ -33,6 +33,10 @@ export class PostReactiveComponent implements OnInit {
           validators: [Validators.required, Validators.minLength(3)],
         }),
         content: new FormControl(null, {
+          validators: [Validators.required, Validators.minLength(1)],
+        }),
+        // [image] necemo sinhronizirati sa stranicom, to nije nužno
+        image: new FormControl(null, {
           validators: [Validators.required, Validators.minLength(3)],
         }),
       });
@@ -80,13 +84,23 @@ export class PostReactiveComponent implements OnInit {
       );
       this.isLoading = false; // definiranje spinerra
     }
-
     this.form.reset(); // reset forme
   }
-}
 
+  // Dodavanje
+  //Image filePicker
+  onImagePicked(event: Event) {
+    // file object
+    const file = (event.target as HTMLInputElement).files[0];
+    // tergetira single control value i mijenja ga samo za reaktivne forme u definicije forme
+    this.form.patchValue({ image: file });
+    // obavijes angular da updatura formu, salje obavijest da su podaci mijenjanjji
+    this.form.get("image").updateValueAndValidity();
+    console.log(file);
+    console.log(this.form);
+  }
+}
 
 // Whereas ReactiveFormsModule gives us reactive driven directives like
 // 	formControl and
 //  ngFormGroup
-
