@@ -5,11 +5,11 @@ import { ActivatedRoute, ParamMap } from "@angular/router";
 import { Post } from "../post.model";
 
 @Component({
-  selector: "app-post-create",
-  templateUrl: "./post-create.component.html",
-  styleUrls: ["./post-create.component.css"],
+  selector: "app-post-create-edit",
+  templateUrl: "./post-create-edit.component.html",
+  styleUrls: ["./post-create-edit.component.css"],
 })
-export class PostCreateComponent implements OnInit {
+export class PostCreateEditComponent implements OnInit {
   // property ...
   enteredTitle: string;
   enteredContent: string;
@@ -19,12 +19,12 @@ export class PostCreateComponent implements OnInit {
 
   constructor(public postService: PostService, public route: ActivatedRoute) {}
 
+  // inicijalizacija
   ngOnInit() {
     // provjeravamo dal smo u edit modu ili create modu
     this.route.paramMap.subscribe((paramMap: ParamMap) => {
       // ParamMap ugradena angular funkcija za istrazivane ruotera...
-      console.log(paramMap);
-
+      // ako je /posts/:postId  --> edit
       if (paramMap.has("postId")) {
         this.mode = "edit";
         this.postId = paramMap.get("postId");
@@ -36,13 +36,22 @@ export class PostCreateComponent implements OnInit {
     });
   }
 
-  // methods....
-  onAddPost(postForm: NgForm) {
+
+
+  // Dodavanje pošte ba listu
+  onSavePost(postForm: NgForm) {
+    // ako forma nije dobro popunjena vraćamo
     if (postForm.invalid) {
       return;
     }
-    // saljemo zapis u program
-    this.postService.addPost(postForm.value.title, postForm.value.content);
+
+    if(this.mode === 'create') {
+      // kreiramo zapis u program
+      this.postService.addPost(postForm.value.title, postForm.value.content);
+    } else {
+      // update
+      this.postService.updatePost(this.postId,postForm.value.title, postForm.value.content);
+    }
 
     // cistimo podatke iz forme
     postForm.resetForm();

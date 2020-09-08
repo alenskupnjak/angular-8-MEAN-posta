@@ -1,14 +1,14 @@
 <mat-card>
-  <form (submit)="onAddPost(postForm)" #postForm="ngForm">
+  <form (submit)="onSavePost(postForm)" #postForm="ngForm">
     <mat-form-field>
       <input
         matInput
         type="text"
         name="title"
-        [ngModel]="post.title"
+        [ngModel]="post?.title"
         required
         placeholder="Title"
-        #titleInput="ngModel"> 
+        #titleInput="ngModel">
         <mat-error *ngIf="titleInput.invalid">Upisite vrijednost</mat-error>
     </mat-form-field>
     <mat-form-field>
@@ -21,7 +21,7 @@
       name="content"
       cols="30"
       rows="10"
-      [ngModel]="post.content"
+      [ngModel]="post?.content"
       required
       placeholder="Content"
       #contentInput="ngModel"></textarea>

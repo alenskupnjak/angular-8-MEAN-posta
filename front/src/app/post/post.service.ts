@@ -80,6 +80,21 @@ export class PostService {
     });
   }
 
+  // UPDATE post
+  updatePost(id: string, title: string, content: string) {
+    // kreiramo novi post koji ce pregaziti postojeci zapis u bazi
+    const post: Post = {
+      id: id,
+      title: title,
+      content: content,
+    };
+    this.http
+      .put("http://localhost:4401/api/posts/" + id, post)
+      .subscribe((res) => {
+        console.log(res);
+      });
+  }
+
   // brisanje zapisa iz baze
   postDelete(id: string) {
     console.log("  postDelete ID =", id);

@@ -12,7 +12,7 @@ import { HttpClientModule } from "@angular/common/http";
 import { AppComponent } from "./app.component";
 
 // Ovdje dodajemo komponente
-import { PostCreateComponent } from "./post/post-create/post-create.component";
+import { PostCreateEditComponent } from "./post/post-create/post-create-edit.component";
 import { HeaderComponent } from "./header/header.component";
 import { PostListComponent } from "./post/post-list/post-list.component";
 import { PostService } from "./post/post.service";
@@ -21,7 +21,7 @@ import { AppRoutingModule } from './app-routing.module';
 @NgModule({
   declarations: [
     AppComponent,
-    PostCreateComponent,
+    PostCreateEditComponent,
     HeaderComponent,
     PostListComponent,
   ],

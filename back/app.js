@@ -85,6 +85,7 @@ app.use((req, res, next) => {
   next();
 });
 
+//
 // POST, dodavanje zappisa u BAZU
 app.post('/api/posts', (req, res, next) => {
   // kreiramo post
@@ -96,13 +97,34 @@ app.post('/api/posts', (req, res, next) => {
   // snimimo podatak u BAZU
   post.save();
 
-  console.log(post);
   res.status(201).json({
     message: 'Uspjeh',
     data: post,
   });
 });
 
+// 
+// PUT
+app.put('/api/posts/:id', (req, res, next) => {
+  // kreiramo novi post kojim cemo pregaziti postojeci
+  const post = new Post({
+    _id: req.body.id,
+    title: req.body.title,
+    content: req.body.content,
+  });
+
+  // radimo update posta...
+  Post.updateOne({_id:req.params.id}, post).then(data=>{
+    console.log(data);
+    res.status(201).json({
+      message: 'Update uspio',
+      data: post,
+    });
+  })
+
+});
+
+//
 // GET (ist kao i use get)
 app.get('/api/posts', (req, res, next) => {
   // posts = [
@@ -123,6 +145,7 @@ app.get('/api/posts', (req, res, next) => {
     });
 });
 
+//
 // DELETE POST
 app.delete('/api/posts/:id', (req, res, next) => {
   console.log(req.params.id);
@@ -145,6 +168,7 @@ app.delete('/api/posts/:id', (req, res, next) => {
     });
 });
 
+//
 // pokusni middeleware
 app.use((req, res, next) => {
   req.pozdravnaporuka = 'pocetna vrijednost';
