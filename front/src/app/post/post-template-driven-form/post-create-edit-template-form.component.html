@@ -8,7 +8,7 @@
         name="title"
         [ngModel]="post?.title"
         required
-        placeholder="Title"
+        placeholder="Template form Title"
         #titleInput="ngModel">
         <mat-error *ngIf="titleInput.invalid">Upisite vrijednost</mat-error>
     </mat-form-field>
@@ -31,7 +31,7 @@
       rows="10"
       [ngModel]="post?.content"
       required
-      placeholder="Content"
+      placeholder="Template form Content"
       #contentInput="ngModel"></textarea>
       <mat-error *ngIf="contentInput.invalid">Upisite vrijednost</mat-error>
     </mat-form-field>

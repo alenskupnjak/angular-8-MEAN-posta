@@ -1,0 +1,32 @@
+<mat-card>
+  <mat-spinner *ngIf="isLoading"></mat-spinner>
+  <form [formGroup]="form" (submit)="onSavePost()"  *ngIf="!isLoading">
+    <mat-form-field>
+      <input
+        matInput
+        type="text"
+        formControlName="title"
+        placeholder="Reactive form Title">
+        <mat-error *ngIf="form.get('title').invalid">Upisite vrijednost</mat-error>
+    </mat-form-field>
+    <div>
+       <!-- mora biti vrijednost type="button" jer bi npr "submit" pokretalo formu -->
+       <button mat-stroke-button type="button" (click)="filePicker.click()" >Pick Image</button>
+       <!-- skrivamo input, a button cemo usmjeriti na input... -->
+      <input type="file" class="sakrij" #filePicker>
+    </div>
+    <mat-form-field>
+      <textarea
+      matInput
+      formControlName="content"
+      cols="30"
+      rows="10"
+      placeholder="Reactive form Content"></textarea>
+      <mat-error *ngIf="form.get('content').invalid">Upisite vrijednost</mat-error>
+    </mat-form-field>
+    <button
+      mat-raised-button
+      color="primary"
+      type="submit">Snimi post</button>
+  </form>
+</mat-card>

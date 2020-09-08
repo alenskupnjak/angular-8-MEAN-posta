@@ -16,7 +16,7 @@ import { AppComponent } from "./app.component";
 // Ovdje dodajemo komponente
 import { PostCreateEditTemplateFormComponent } from "./post/post-template-driven-form/post-create-edit-template-form.component";
 
-import {PostCreateEditReactiveComponent} from "./post/post-reactive-driven-form/post-create-edit.component"
+import {PostReactiveComponent} from "./post/post-reactive-driven-form/post-reactive.component"
 import { HeaderComponent } from "./header/header.component";
 import { PostListComponent } from "./post/post-list/post-list.component";
 import { PostService } from "./post/post.service";
@@ -26,7 +26,7 @@ import { AppRoutingModule } from "./app-routing.module";
   declarations: [
     AppComponent,
     PostCreateEditTemplateFormComponent,
-    PostCreateEditReactiveComponent,
+    PostReactiveComponent,
     HeaderComponent,
     PostListComponent,
   ],

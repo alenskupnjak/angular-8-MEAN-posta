@@ -1,15 +1,15 @@
 import { Component, OnInit } from "@angular/core";
-import { NgForm } from "@angular/forms";
+import { FormGroup, FormControl, Validators } from "@angular/forms";
 import { PostService } from "../post.service";
 import { ActivatedRoute, ParamMap } from "@angular/router";
 import { Post } from "../post.model";
 
 @Component({
   selector: "app-post-create-edit",
-  templateUrl: "./post-create-edit.component.html",
-  styleUrls: ["./post-create-edit.component.css"],
+  templateUrl: "./post-reactive.component.html",
+  styleUrls: ["./post-reactive.component.css"],
 })
-export class PostCreateEditReactiveComponent implements OnInit {
+export class PostReactiveComponent implements OnInit {
   // property ...
   enteredTitle: string;
   enteredContent: string;
@@ -17,6 +17,7 @@ export class PostCreateEditReactiveComponent implements OnInit {
   post: Post; // mora biti javan podatak da bi ga vidio HTML
   private mode = "create";
   private postId: string;
+  form: FormGroup;  // definirana forma
 
   constructor(public postService: PostService, public route: ActivatedRoute) {}
 
@@ -26,7 +27,17 @@ export class PostCreateEditReactiveComponent implements OnInit {
 
     // provjera dali radi
     setTimeout(() => {
-      // provjeravamo dal smo u edit modu ili create modu
+      // kreiramo formu
+      this.form = new FormGroup({
+        title: new FormControl(null, {
+          validators: [Validators.required, Validators.minLength(3)],
+        }),
+        content: new FormControl(null, {
+          validators: [Validators.required, Validators.minLength(3)],
+        }),
+      });
+
+      // provjeravamo dal smo u EDIT ili CREATE modu
       this.route.paramMap.subscribe((paramMap: ParamMap) => {
         // ParamMap ugradena angular funkcija za istrazivane ruotera...
         // ako je /posts/:postId  --> edit
@@ -34,6 +45,11 @@ export class PostCreateEditReactiveComponent implements OnInit {
           this.mode = "edit";
           this.postId = paramMap.get("postId");
           this.post = this.postService.getPost(this.postId);
+          // inicijaliziramo vrijednosti u formi
+          this.form.setValue({
+            title: this.post.title,
+            content: this.post.content,
+          });
         } else {
           this.mode = "create";
           this.postId = null;
@@ -44,28 +60,33 @@ export class PostCreateEditReactiveComponent implements OnInit {
   }
 
   // Dodavanje pošte ba listu
-  onSavePost(postForm: NgForm) {
+  onSavePost() {
     this.isLoading = true; // definiranje spinerra
     // ako forma nije dobro popunjena vraćamo
-    if (postForm.invalid) {
+    if (this.form.invalid) {
       return;
     }
 
     if (this.mode === "create") {
       // kreiramo zapis u program
-      this.postService.addPost(postForm.value.title, postForm.value.content);
+      this.postService.addPost(this.form.value.title, this.form.value.content);
       this.isLoading = false; // definiranje spinerra
     } else {
       // update
       this.postService.updatePost(
         this.postId,
-        postForm.value.title,
-        postForm.value.content
+        this.form.value.title,
+        this.form.value.content
       );
       this.isLoading = false; // definiranje spinerra
     }
 
-    // cistimo podatke iz forme
-    postForm.resetForm();
+    this.form.reset(); // reset forme
   }
 }
+
+
+// Whereas ReactiveFormsModule gives us reactive driven directives like
+// 	formControl and
+//  ngFormGroup
+
