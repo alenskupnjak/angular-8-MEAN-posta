@@ -11,6 +11,7 @@ import { Subscription } from "rxjs";
 export class PostListComponent implements OnInit, OnDestroy {
   // property ... Prima podatke ....
   postaUlazna: Post[] = [];
+  isLoading = false; // definiranje spinerra
 
   // definiramo varijablu zbog memory leak-a...
   private postsSub: Subscription;
@@ -19,6 +20,8 @@ export class PostListComponent implements OnInit, OnDestroy {
 
   // methods....
   ngOnInit() {
+    this.isLoading = true; // definiranje spinerra
+
     // u prvom prolazu dohvaca podatke ako ih ima
     // this.postaUlazna = this.postService.getPosts(); // verzija 1
     this.postService.getPosts();
@@ -29,9 +32,12 @@ export class PostListComponent implements OnInit, OnDestroy {
       .subscribe((posts: Post[]) => {
         this.postaUlazna = posts;
       });
+    setTimeout(() => {
+      this.isLoading = false;
+    }, 1000);
   }
 
-  onDelete (id:string) {
+  onDelete(id: string) {
     this.postService.postDelete(id);
   }
 

@@ -8,6 +8,7 @@ import { MatCardModule } from "@angular/material/card";
 import { MatToolbarModule } from "@angular/material/toolbar";
 import { MatExpansionModule } from "@angular/material/expansion";
 import { HttpClientModule } from "@angular/common/http";
+import { MatProgressSpinnerModule } from "@angular/material/progress-spinner";
 
 import { AppComponent } from "./app.component";
 
@@ -16,7 +17,7 @@ import { PostCreateEditComponent } from "./post/post-create/post-create-edit.com
 import { HeaderComponent } from "./header/header.component";
 import { PostListComponent } from "./post/post-list/post-list.component";
 import { PostService } from "./post/post.service";
-import { AppRoutingModule } from './app-routing.module';
+import { AppRoutingModule } from "./app-routing.module";
 
 @NgModule({
   declarations: [
@@ -27,7 +28,7 @@ import { AppRoutingModule } from './app-routing.module';
   ],
   imports: [
     BrowserModule,
-    AppRoutingModule,  // za router
+    AppRoutingModule, // za router
     FormsModule, // za  [(ngModel)]
     BrowserAnimationsModule, // material
     MatInputModule, // omogučava nam pristup komponentama
@@ -35,7 +36,8 @@ import { AppRoutingModule } from './app-routing.module';
     MatCardModule,
     MatToolbarModule,
     MatExpansionModule,
-    HttpClientModule
+    HttpClientModule,
+    MatProgressSpinnerModule,
   ],
   providers: [PostService],
   bootstrap: [AppComponent],

@@ -3,6 +3,7 @@ import { Subject } from "rxjs";
 import { HttpClient } from "@angular/common/http";
 import { Injectable } from "@angular/core";
 import { map } from "rxjs/operators";
+import { Router } from "@angular/router";
 // import { HttpClientModule } from '@angular/common/http';
 
 @Injectable() // ovo mora biti za provider !!!!
@@ -13,7 +14,7 @@ export class PostService {
   // OBSERVABLE  ---kojim cemo slati obavijest o promjeni podatka kroz program
   private postUpdated = new Subject<Post[]>();
 
-  constructor(public http: HttpClient) {}
+  constructor(public http: HttpClient, private router: Router) {}
 
   // povlačenje podataka sa mreže
   getPosts() {
@@ -63,13 +64,14 @@ export class PostService {
     this.http
       .post<{ message: string }>("http://localhost:4401/api/posts", post)
       .subscribe((data) => {
-        console.log(data.message);
         console.log(data);
 
         this.posts.push(post);
         // šaljemo podatak u program sa next....
         this.postUpdated.next([...this.posts]);
-        this.getPosts();
+        // this.getPosts(); staro rijesenje
+        // vracamo na listu svih postova
+        this.router.navigate(['/'])
       });
   }
 
@@ -91,7 +93,9 @@ export class PostService {
     this.http
       .put("http://localhost:4401/api/posts/" + id, post)
       .subscribe((res) => {
-        console.log(res);
+        console.log('Update',res);
+        // vracamo na listu svih postova
+        this.router.navigate(['/'])
       });
   }
 
