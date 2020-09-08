@@ -34,7 +34,7 @@ export class PostListComponent implements OnInit, OnDestroy {
       });
     setTimeout(() => {
       this.isLoading = false;
-    }, 1000);
+    }, 500);
   }
 
   onDelete(id: string) {

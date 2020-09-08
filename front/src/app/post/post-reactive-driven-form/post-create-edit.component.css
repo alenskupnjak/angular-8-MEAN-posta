@@ -15,4 +15,15 @@ mat-spinner {
   margin:auto;
 }
 
+/* isto ko i .sakrij ispod */
+input[type='file'] {
+  visibility: hidden;
+}
+
+/* ili !! */
+
+/* .sakrij {
+  visibility: hidden;
+} */
+
 

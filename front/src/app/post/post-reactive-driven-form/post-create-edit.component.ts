@@ -9,7 +9,7 @@ import { Post } from "../post.model";
   templateUrl: "./post-create-edit.component.html",
   styleUrls: ["./post-create-edit.component.css"],
 })
-export class PostCreateEditComponent implements OnInit {
+export class PostCreateEditReactiveComponent implements OnInit {
   // property ...
   enteredTitle: string;
   enteredContent: string;
@@ -40,7 +40,7 @@ export class PostCreateEditComponent implements OnInit {
         }
         this.isLoading = false;
       });
-    }, 1000);
+    }, 500);
   }
 
   // Dodavanje pošte ba listu

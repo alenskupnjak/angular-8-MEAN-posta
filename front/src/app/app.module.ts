@@ -1,7 +1,8 @@
 import { BrowserModule } from "@angular/platform-browser";
 import { NgModule } from "@angular/core";
 import { BrowserAnimationsModule } from "@angular/platform-browser/animations";
-import { FormsModule } from "@angular/forms"; // za  [(ngModel)]
+import { FormsModule } from "@angular/forms"; // za  [(ngModel)] Template driven forme
+import { ReactiveFormsModule } from "@angular/forms"; // za  [(ngModel)] Reactive driven forme
 import { MatInputModule } from "@angular/material/input";
 import { MatButtonModule } from "@angular/material/button";
 import { MatCardModule } from "@angular/material/card";
@@ -13,7 +14,9 @@ import { MatProgressSpinnerModule } from "@angular/material/progress-spinner";
 import { AppComponent } from "./app.component";
 
 // Ovdje dodajemo komponente
-import { PostCreateEditComponent } from "./post/post-create/post-create-edit.component";
+import { PostCreateEditTemplateFormComponent } from "./post/post-template-driven-form/post-create-edit-template-form.component";
+
+import {PostCreateEditReactiveComponent} from "./post/post-reactive-driven-form/post-create-edit.component"
 import { HeaderComponent } from "./header/header.component";
 import { PostListComponent } from "./post/post-list/post-list.component";
 import { PostService } from "./post/post.service";
@@ -22,7 +25,8 @@ import { AppRoutingModule } from "./app-routing.module";
 @NgModule({
   declarations: [
     AppComponent,
-    PostCreateEditComponent,
+    PostCreateEditTemplateFormComponent,
+    PostCreateEditReactiveComponent,
     HeaderComponent,
     PostListComponent,
   ],
@@ -38,6 +42,7 @@ import { AppRoutingModule } from "./app-routing.module";
     MatExpansionModule,
     HttpClientModule,
     MatProgressSpinnerModule,
+    ReactiveFormsModule
   ],
   providers: [PostService],
   bootstrap: [AppComponent],
