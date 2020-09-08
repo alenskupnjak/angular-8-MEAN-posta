@@ -152,8 +152,8 @@ console.log(colors.bgRed('START START START'));
 // Enable CORS
 // app.use(cors());
 
-// Set static folder, folder gdje se spremaju svi fileovi
-app.use(express.static(path.join(__dirname, 'public')));
+// // Set static folder, folder gdje se spremaju svi fileovi
+// app.use(express.static(path.join(__dirname, 'public')));
 
 // // Mount routers
 app.use('/api/posts', postsRoutes);

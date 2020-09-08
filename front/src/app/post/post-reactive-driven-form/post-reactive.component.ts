@@ -26,41 +26,42 @@ export class PostReactiveComponent implements OnInit {
   // inicijalizacija
   ngOnInit() {
     this.isLoading = true; // definiranje spinerra
-      // kreiramo formu
-      this.form = new FormGroup({
-        title: new FormControl(null, {
-          validators: [Validators.required, Validators.minLength(3)],
-        }),
-        content: new FormControl(null, {
-          validators: [Validators.required, Validators.minLength(1)],
-        }),
-        // [image] necemo sinhronizirati sa stranicom, to nije nužno
-        image: new FormControl(null, {
-          validators: [Validators.required],
-          asyncValidators: [mimeType]
-        }),
-      });
+    // kreiramo formu
+    this.form = new FormGroup({
+      title: new FormControl(null, {
+        validators: [Validators.required, Validators.minLength(3)],
+      }),
+      content: new FormControl(null, {
+        validators: [Validators.required, Validators.minLength(1)],
+      }),
+      // [image] necemo sinhronizirati sa stranicom, to nije nužno
+      image: new FormControl(null, {
+        validators: [Validators.required],
+        asyncValidators: [mimeType],
+      }),
+    });
 
-      // provjeravamo dal smo u EDIT ili CREATE modu
-      this.route.paramMap.subscribe((paramMap: ParamMap) => {
-        // ParamMap ugradena angular funkcija za istrazivane ruotera...
-        // ako je /posts/:postId  --> edit
-        if (paramMap.has("postId")) {
-          this.mode = "edit";
-          this.postId = paramMap.get("postId");
-          this.post = this.postService.getPost(this.postId);
-          // inicijaliziramo vrijednosti u formi
-          this.form.setValue({
-            title: this.post.title,
-            content: this.post.content,
-          });
-        } else {
-          this.mode = "create";
-          this.postId = null;
-        }
-        this.isLoading = false;
-      });
+    // provjeravamo dal smo u EDIT ili CREATE modu
+    this.route.paramMap.subscribe((paramMap: ParamMap) => {
+      // ParamMap ugradena angular funkcija za istrazivane ruotera...
+      // ako je /posts/:postId  --> edit
+      if (paramMap.has("postId")) {
+        this.mode = "edit";
+        this.postId = paramMap.get("postId");
+        this.post = this.postService.getPost(this.postId);
 
+        // inicijaliziramo vrijednosti u formi
+        this.form.setValue({
+          title: this.post.title,
+          content: this.post.content,
+          image: this.post.imagePath
+        });
+      } else {
+        this.mode = "create";
+        this.postId = null;
+      }
+      this.isLoading = false;
+    });
   }
 
   // Dodavanje pošte ba listu
@@ -73,15 +74,20 @@ export class PostReactiveComponent implements OnInit {
 
     if (this.mode === "create") {
       // kreiramo zapis u program
-      this.postService.addPost(this.form.value.title, this.form.value.content, this.form.value.image);
+      this.postService.addPost(
+        this.form.value.title,
+        this.form.value.content,
+        this.form.value.image
+      );
       this.isLoading = false; // definiranje spinerra
     } else {
       // update
-      // this.postService.updatePost(
-      //   this.postId,
-      //   this.form.value.title,
-      //   this.form.value.content
-      // );
+      this.postService.updatePost(
+        this.postId,
+        this.form.value.title,
+        this.form.value.content,
+        this.form.value.image
+      );
       this.isLoading = false; // definiranje spinerra
     }
     this.form.reset(); // reset forme

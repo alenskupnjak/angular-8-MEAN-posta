@@ -7,14 +7,13 @@ import { Router } from "@angular/router";
 
 @Injectable() // ovo mora biti za provider !!!!
 export class PostService {
-  // osnovno polje iz kojeg vučemo podatke
+  // osnovno polje iz kojeg vučemo podatke koji ce se prikazivati na ekranu
   private posts: Post[] = [];
 
   // OBSERVABLE  ---kojim cemo slati obavijest o promjeni podatka kroz program
   private postUpdated = new Subject<Post[]>();
 
   constructor(public http: HttpClient, private router: Router) {}
-
 
   //
   // povlačenje podataka sa mreže
@@ -36,7 +35,7 @@ export class PostService {
               title: data.title,
               content: data.content,
               id: data._id,
-              imagePath: data.imagePath
+              imagePath: data.imagePath,
             };
           });
         })
@@ -50,12 +49,14 @@ export class PostService {
       });
   }
 
+  //
   // OBSERVABLE - ova funkcija je triger na promjene u post podacima
   getPostUpdateListener() {
     // ako se mijenja vrijednost postupdate, salje signal
     return this.postUpdated.asObservable();
   }
 
+  //
   // dodavanje novog zapisa
   addPost(title: string, content: string, image: File) {
     // const post: Post = {
@@ -102,16 +103,26 @@ export class PostService {
   }
 
   // UPDATE post
-  updatePost(id: string, title: string, content: string, imagePath: null) {
-    // kreiramo novi post koji ce pregaziti postojeci zapis u bazi
-    const post: Post = {
-      id: id,
-      title: title,
-      content: content,
-      imagePath: imagePath,
-    };
+  updatePost(id: string, title: string, content: string, image: any) {
+    let postData: Post | FormData;
+    console.log(typeof image === "object");
+
+    if (typeof image === "object") {
+      postData = new FormData();
+      postData.append("id", id);
+      postData.append("title", title);
+      postData.append("content", content);
+      postData.append("image", image, title);
+    } else {
+      postData = {
+        id: id,
+        title: title,
+        content: content,
+        imagePath: image,
+      };
+    }
     this.http
-      .put("http://localhost:4401/api/posts/" + id, post)
+      .put("http://localhost:4401/api/posts/" + id, postData)
       .subscribe((res) => {
         console.log("Update", res);
         // vracamo na listu svih postova

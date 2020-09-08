@@ -3,6 +3,7 @@ const Post = require('../models/post');
 const router = express.Router();
 const multer = require('multer');
 
+// ta rad u MULTER
 const MIME_TYPE_MAP = {
   'image/png': 'png',
   'image/jpeg': 'jpg',
@@ -30,7 +31,7 @@ const storage = multer.diskStorage({
     const name = file.originalname.toLowerCase().split(' ').join('-');
     const ext = MIME_TYPE_MAP[file.mimetype];
     console.log('ime=', name + '-' + '.' + ext);
-    cb(null, name + '-' + '.' + ext);
+    cb(null, name + '-' + Date.now() +'.' + ext);
   },
 });
 
@@ -81,23 +82,31 @@ router.post(
 
 //
 // PUT
-router.put('/:id', (req, res, next) => {
-  // kreiramo novi post kojim cemo pregaziti postojeci
-  const post = new Post({
-    _id: req.body.id,
-    title: req.body.title,
-    content: req.body.content,
-  });
-
-  // radimo update posta...
-  Post.updateOne({ _id: req.params.id }, post).then((data) => {
-    console.log(data);
-    res.status(201).json({
-      message: 'Update uspio',
-      data: post,
+router.put(
+  '/:id',
+  multer({ storage: storage }).single('image'),
+  (req, res, next) => {
+    console.log(req.body);
+    console.log('req.file',req.file);
+    const url = req.protocol + '://' + req.get('host');
+    // kreiramo novi post kojim cemo pregaziti postojeci
+    const post = new Post({
+      _id: req.body.id,
+      title: req.body.title,
+      content: req.body.content,
+      imagePath: url + '/images/' + req.file.filename
     });
-  });
-});
+
+    // radimo update posta...
+    Post.updateOne({ _id: req.params.id }, post).then((data) => {
+      console.log(data);
+      res.status(201).json({
+        message: 'Update uspio',
+        data: post,
+      });
+    });
+  }
+);
 
 //
 // GET (ist kao i use get)
