@@ -18,6 +18,7 @@ export class PostReactiveComponent implements OnInit {
   private mode = "create";
   private postId: string;
   form: FormGroup; // definirana forma
+  imagePreview: string = null;
 
   constructor(public postService: PostService, public route: ActivatedRoute) {}
 
@@ -96,6 +97,20 @@ export class PostReactiveComponent implements OnInit {
     this.form.patchValue({ image: file });
     // obavijes angular da updatura formu, salje obavijest da su podaci mijenjanjji
     this.form.get("image").updateValueAndValidity();
+
+
+    // omogucuje nam rad sa fileovima
+    const reader = new FileReader();
+    // async, cekamo da zavrsi da se file usnimi
+    reader.onload = () => {
+      // ova je zapis same slike
+      this.imagePreview = reader.result as string
+    };
+
+    // read the binary data and encode it as base64 data url.
+    reader.readAsDataURL(file);
+
+
     console.log(file);
     console.log(this.form);
   }
