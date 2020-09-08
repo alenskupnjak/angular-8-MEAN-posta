@@ -23,7 +23,9 @@ export class PostReactiveComponent implements OnInit {
 
   constructor(public postService: PostService, public route: ActivatedRoute) {}
 
+  //
   // inicijalizacija
+  //
   ngOnInit() {
     this.isLoading = true; // definiranje spinerra
     // kreiramo formu
@@ -54,7 +56,7 @@ export class PostReactiveComponent implements OnInit {
         this.form.setValue({
           title: this.post.title,
           content: this.post.content,
-          image: this.post.imagePath
+          image: this.post.imagePath,
         });
       } else {
         this.mode = "create";
@@ -64,11 +66,14 @@ export class PostReactiveComponent implements OnInit {
     });
   }
 
-  // Dodavanje pošte ba listu
+  //
+  // Dodavanje pošte na listu
+  //
   onSavePost() {
     this.isLoading = true; // definiranje spinerra
     // ako forma nije dobro popunjena vraćamo
     if (this.form.invalid) {
+      console.log('lolol');
       return;
     }
 
@@ -118,7 +123,3 @@ export class PostReactiveComponent implements OnInit {
     console.log(this.form);
   }
 }
-
-// Whereas ReactiveFormsModule gives us reactive driven directives like
-// 	formControl and
-//  ngFormGroup

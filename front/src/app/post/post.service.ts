@@ -4,6 +4,7 @@ import { HttpClient } from "@angular/common/http";
 import { Injectable } from "@angular/core";
 import { map } from "rxjs/operators";
 import { Router } from "@angular/router";
+import {environment} from '../../environments/environment'
 
 @Injectable() // ovo mora biti za provider !!!!
 export class PostService {
@@ -18,12 +19,14 @@ export class PostService {
   //
   // povlačenje podataka sa mreže
   getPosts() {
+    console.log('Staza-',environment.path);
+
     // uvijek radis kopiju polja
     // return [...this.posts];
     this.http
       // <{ definiramo ulazne vrijednosti kje ce biti kao objekt}>
       // posts je namjerno stavljen any da možemo transformirati _id u id.....
-      .get<{ message: string; posts: any }>("http://localhost:4401/api/posts")
+      .get<{ message: string; posts: any }>(`${environment.path}/api/posts`)
 
       // ovaj dio je visak jer se ID automatski povezuje sa _id
       .pipe(
@@ -122,7 +125,7 @@ export class PostService {
       };
     }
     this.http
-      .put("http://localhost:4401/api/posts/" + id, postData)
+      .put(`http://localhost:4401/api/posts/` + id, postData)
       .subscribe((res) => {
         console.log("Update", res);
         // vracamo na listu svih postova
@@ -138,7 +141,7 @@ export class PostService {
     console.log("http://localhost:4401/api/posts/" + id);
 
     this.http
-      .delete("http://localhost:4401/api/posts/" + id)
+      .delete(`${environment.path}/api/posts/` + id)
       .subscribe((data) => {
         console.log("Podatak obrisan");
         this.getPosts();

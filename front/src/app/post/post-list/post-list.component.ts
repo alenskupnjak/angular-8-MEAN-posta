@@ -34,17 +34,13 @@ export class PostListComponent implements OnInit, OnDestroy {
         // angular automatski renderira stranicu ponovo
         this.postaUlazna = posts;
       });
-    setTimeout(() => {
       this.isLoading = false;
-    }, 500);
   }
 
   onDelete(id: string) {
     this.postService.postDelete(id);
   }
 
-
-  
 
   // cuvamo od memory leak-a
   ngOnDestroy() {

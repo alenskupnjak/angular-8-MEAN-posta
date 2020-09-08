@@ -2,6 +2,7 @@ const express = require('express');
 const Post = require('../models/post');
 const router = express.Router();
 const multer = require('multer');
+const fs = require('fs');
 
 // ta rad u MULTER
 const MIME_TYPE_MAP = {
@@ -31,7 +32,7 @@ const storage = multer.diskStorage({
     const name = file.originalname.toLowerCase().split(' ').join('-');
     const ext = MIME_TYPE_MAP[file.mimetype];
     console.log('ime=', name + '-' + '.' + ext);
-    cb(null, name + '-' + Date.now() +'.' + ext);
+    cb(null, name + '-' + Date.now() + '.' + ext);
   },
 });
 
@@ -63,6 +64,7 @@ router.post(
       title: req.body.title,
       content: req.body.content,
       imagePath: url + '/images/' + req.file.filename,
+      imagePathRelative: 'images/' + req.file.filename,
     });
 
     // snimimo podatak u BAZU
@@ -74,6 +76,7 @@ router.post(
           title: createdPost.title,
           content: createdPost.content,
           imagePath: createdPost.imagePath,
+          imagePathRelative: createdPost.imagePath
         },
       });
     });
@@ -87,19 +90,35 @@ router.put(
   multer({ storage: storage }).single('image'),
   (req, res, next) => {
     console.log(req.body);
-    console.log('req.file',req.file);
+    console.log('req.file', req.file);
     const url = req.protocol + '://' + req.get('host');
     // kreiramo novi post kojim cemo pregaziti postojeci
     const post = new Post({
       _id: req.body.id,
       title: req.body.title,
       content: req.body.content,
-      imagePath: url + '/images/' + req.file.filename
+      imagePath: url + '/images/' + req.file.filename,
+      imagePathRelative: 'images/' + req.file.filename,
     });
 
     // radimo update posta...
     Post.updateOne({ _id: req.params.id }, post).then((data) => {
       console.log(data);
+      // obrisi file
+      console.log('tototot');
+      
+      // fs.unlink(
+      //   'images/' + req.file.filename,
+      //   (err) => {
+      //     try {
+      //       console.log('Obrisao file cc');
+      //     } catch (error) {
+      //       console.log(error);
+      //     }
+      //   }
+      // );
+
+
       res.status(201).json({
         message: 'Update uspio',
         data: post,
@@ -133,17 +152,30 @@ router.get('', (req, res, next) => {
 // DELETE POST
 router.delete('/:id', (req, res, next) => {
   console.log(req.params.id);
+
   Post.find({ _id: req.params.id })
     .then((data) => {
-      console.log('data', data);
+      console.log('datadelete----', data);
+      console.log('datadelete', data[0].imagePathRelative);
+
+      fs.unlink(
+        data[0].imagePathRelative,
+        (err) => {
+          try {
+            console.log('Obrisao file cc');
+          } catch (error) {
+            console.log(error);
+          }
+        }
+      );
+
       return data[0].id;
     })
     .then((data) => {
-      console.log(data);
       Post.deleteOne({ _id: data }).then((data) => {
         console.log('Posta obrisana BACKEND');
         res.status(200).json({
-          message: ' Posta uspješno obrisana',
+          message: 'Posta uspješno obrisana',
         });
       });
     })
