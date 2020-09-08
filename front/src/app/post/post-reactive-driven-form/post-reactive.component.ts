@@ -3,6 +3,7 @@ import { FormGroup, FormControl, Validators } from "@angular/forms";
 import { PostService } from "../post.service";
 import { ActivatedRoute, ParamMap } from "@angular/router";
 import { Post } from "../post.model";
+import { mimeType } from "./mime-type.validator";
 
 @Component({
   selector: "app-post-create-edit",
@@ -38,7 +39,8 @@ export class PostReactiveComponent implements OnInit {
         }),
         // [image] necemo sinhronizirati sa stranicom, to nije nužno
         image: new FormControl(null, {
-          validators: [Validators.required, Validators.minLength(3)],
+          validators: [Validators.required],
+          asyncValidators: [mimeType]
         }),
       });
 
@@ -98,18 +100,16 @@ export class PostReactiveComponent implements OnInit {
     // obavijes angular da updatura formu, salje obavijest da su podaci mijenjanjji
     this.form.get("image").updateValueAndValidity();
 
-
     // omogucuje nam rad sa fileovima
     const reader = new FileReader();
     // async, cekamo da zavrsi da se file usnimi
     reader.onload = () => {
       // ova je zapis same slike
-      this.imagePreview = reader.result as string
+      this.imagePreview = reader.result as string;
     };
 
     // read the binary data and encode it as base64 data url.
     reader.readAsDataURL(file);
-
 
     console.log(file);
     console.log(this.form);

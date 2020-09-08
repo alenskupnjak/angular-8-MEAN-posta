@@ -15,7 +15,7 @@
        <!-- skrivamo input, a button cemo usmjeriti na input... -->
       <input type="file" class="sakrij" #filePicker (change)=onImagePicked($event)>
     </div>
-    <div class="image-preview" *ngIf="imagePreview !== '' && imagePreview">
+    <div class="image-preview" *ngIf="imagePreview !== '' && imagePreview && form.get('image').valid">
       <img [src]="imagePreview" [alt]="form.value.title">
     </div>
     <mat-form-field>
