@@ -1,7 +1,7 @@
 const express = require('express');
 const path = require('path');
 const dotenv = require('dotenv'); // Load config file
-const bodyParser = require('body-parser'); // Body parser, bez ovoga ne mozemo slati podatke u req.body
+const bodyParser = require('body-parser'); // bez ovoga ne mozemo slati podatke u req.body
 const mongoose = require('mongoose');
 const colors = require('colors');
 
@@ -67,11 +67,11 @@ const connectDB = () => {
 // Spajanje na bazu
 connectDB();
 
-// // Route files
-const postsRoutes = require('./routes/posts');
+//  ROUTE routs path files
+const postsRoutes = require('./routes/postsRoutes');
+const userRouter = require('./routes/userRoutes');
 // const coursesRouter = require('./routes/coursesRouter');
 // const authRouter = require('./routes/authRouter');
-// const userRouter = require('./routes/userRouter');
 // const reviewsRouter = require('./routes/reviewsRouter');
 // const viewRouter = require('./routes/viewRouter');
 
@@ -155,12 +155,12 @@ console.log(colors.bgRed('START START START'));
 // // Set static folder, folder gdje se spremaju svi fileovi
 // app.use(express.static(path.join(__dirname, 'public')));
 
-// // Mount routers
+// Mount routers
 app.use('/api/posts', postsRoutes);
+app.use('/api/user', userRouter);
 // app.use('/api/v1/bootcamps', bootcampRouter);
 // app.use('/api/v1/courses', coursesRouter);
 // app.use('/api/v1/auth', authRouter);
-// app.use('/api/v1/users', userRouter);
 // app.use('/api/v1/reviews', reviewsRouter);
 
 // // MIDDLEWARE za greske

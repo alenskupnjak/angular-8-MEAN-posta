@@ -17,7 +17,10 @@ export class PostService {
   currentPageServis = 1;
 
   // OBSERVABLE  ---kojim cemo slati obavijest o promjeni podatka kroz program
-  private postUpdated = new Subject<{posts: Post[];brojDokumenata: number}>();
+  private postUpdated = new Subject<{
+    posts: Post[];
+    brojDokumenata: number;
+  }>();
 
   constructor(public http: HttpClient, private router: Router) {}
   // *********************************************

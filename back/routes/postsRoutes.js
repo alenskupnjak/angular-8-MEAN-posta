@@ -1,5 +1,5 @@
 const express = require('express');
-const Post = require('../models/post');
+const Post = require('../models/postModel');
 const router = express.Router();
 const multer = require('multer');
 const fs = require('fs');
@@ -204,4 +204,6 @@ router.delete('/:id', (req, res, next) => {
     });
 });
 
-module.exports = router;
+
+
+module.exports = router;  // dolazi kod svakog routera!!!

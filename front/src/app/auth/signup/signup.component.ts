@@ -1,24 +1,23 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit } from "@angular/core";
 import { NgForm } from "@angular/forms";
+import { AuthServices } from "../auth.service";
 
 @Component({
   // selector: 'app-signup',   ako se pristupa preko routera ne treba selector!!!
-  templateUrl: './signup.component.html',
-  styleUrls: ['./signup.component.css']
+  templateUrl: "./signup.component.html",
+  styleUrls: ["./signup.component.css"],
 })
 export class SignupComponent implements OnInit {
   isLoading = false; // definiranje spinerra
 
-  constructor() { }
+  constructor(public authServices: AuthServices) {}
 
-  ngOnInit() {
-  }
+  ngOnInit() {}
 
   onSignup(signup: NgForm) {
-    console.log(signup);
-    console.log(signup.value);
-
-
+    if (signup.invalid) {
+      return;
+    }
+    this.authServices.createUser(signup.value.email, signup.value.password);
   }
-
 }
