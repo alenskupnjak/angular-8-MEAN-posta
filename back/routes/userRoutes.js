@@ -1,9 +1,15 @@
 const express = require('express');
+const bcrypt = require('bcrypt');
+const jwt = require('jsonwebtoken');
+const router = express.Router();
+
+// kreirane komponente
 const Post = require('../models/postModel');
 const User = require('../models/userModel');
-const router = express.Router();
-const bcrypt = require('bcrypt');
 
+//*****************************
+// POST /api/user/signup
+// SIGN UP
 router.post('/signup', (req, res, next) => {
   bcrypt.hash(req.body.password, 10).then((hashPassword) => {
     const user = new User({
@@ -15,7 +21,7 @@ router.post('/signup', (req, res, next) => {
       .save()
       .then((result) => {
         res.status(201).json({
-          message: 'Uspješno kreirana lozinka',
+          message: 'Uspješno kreiran korisnik',
           result: result,
         });
       })
@@ -25,6 +31,55 @@ router.post('/signup', (req, res, next) => {
         });
       });
   });
+});
+
+//*****************************
+// POST /api/user/login
+// LOGIN LOGIN LOGIN LOGIN LOGIN LOGIN LOGIN
+router.post('/login', (req, res, next) => {
+  let userLogin;
+  User.findOne({ email: req.body.email })
+    .then((user) => {
+      console.log('user', user);
+
+      if (!user) {
+        return res.status(401).json({
+          message: 'Autorizacija nije uspjela',
+        });
+      }
+
+      userLogin = user;
+      // usporedujemo upisani password sa hasa-passwordom u bazi
+      // rezultat je TRUE ili FALSE
+      return bcrypt.compare(req.body.password, user.password);
+    })
+    .then((result) => {
+      console.log('result=', result);
+      console.log(req.user);
+      console.log(req.body);
+
+      if (!result) {
+        return res.status(401).json({
+          message: 'Autorizacija nije uspjela',
+        });
+      }
+      console.log('process.env', process.env.JWT_SECRET_WORD, userLogin);
+
+      // kreiramo token
+      const token = jwt.sign(
+        { email: userLogin.email, userId: userLogin._id },
+        process.env.JWT_SECRET_WORD,
+        { expiresIn: '1h' }
+      );
+
+      res.status(200).json({
+        message: 'Logiranje uspjelo',
+        token: token,
+      });
+    })
+    .catch((err) => {
+      console.log(err);
+    });
 });
 
 module.exports = router; // dolazi kod svakog routera!!!

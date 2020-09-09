@@ -17,7 +17,7 @@ export class PostListComponent implements OnInit, OnDestroy {
   isLoading = false; // definiranje spinerra
 
   totalPost = 0; // paginacija ,ukupna duljina liste
-  postPerPage = 3;  // paginacija ,zapisa po stranici
+  postPerPage = 5;  // paginacija ,zapisa po stranici
   currentPage = 1; // trenutna stranica
   pageSizeOptions = [1, 2, 5, 10, 30]; // definira koliko cemo max. prikazivati na stranici
 
