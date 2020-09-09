@@ -7,8 +7,15 @@ import { AuthData } from "./auth-data";
 //
 @Injectable({ providedIn: "root" })
 export class AuthServices {
+  token: string;
+
   constructor(private http: HttpClient, private router: Router) {}
 
+  getToken() {
+    return this.token;
+  }
+
+  
   // SIGN UP - kreiramo user-a
   createUser(email: string, password: string) {
     const authData: AuthData = {
@@ -16,7 +23,7 @@ export class AuthServices {
       password: password,
     };
     this.http
-      .post<{ user: AuthData }>(`${environment.path}/api/user/signup`, authData)
+      .post(`${environment.path}/api/user/signup`, authData)
       .subscribe((res) => {
         console.log(res);
       });
@@ -24,13 +31,15 @@ export class AuthServices {
 
   // SIGN UP - kreiramo user-a
   loginUser(email: string, password: string) {
-    const user = {
+    const authData: AuthData = {
       email: email,
       password: password,
     };
     this.http
-      .post(`${environment.path}/api/user/login`, user)
+      .post<{ token: string }>(`${environment.path}/api/user/login`, authData)
       .subscribe((res) => {
+        const token = res.token;
+        this.token = token;
         console.log(res);
       });
   }

@@ -1,9 +1,11 @@
 const express = require('express');
-const Post = require('../models/postModel');
 const router = express.Router();
 const multer = require('multer');
 const fs = require('fs');
 const colors = require('colors');
+
+const checkAuth = require('../middleware/check-authorization');
+const Post = require('../models/postModel');
 
 // ta rad u MULTER
 const MIME_TYPE_MAP = {
@@ -17,8 +19,6 @@ const MIME_TYPE_MAP = {
 // za spremanje fileova
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
-    console.log('LALALAL');
-
     // podesavamo da vidimo dali je file ispravne extenzije
     const isValid = MIME_TYPE_MAP[file.mimetype];
     let error = new Error('Invalid mime type');
@@ -29,7 +29,6 @@ const storage = multer.diskStorage({
     cb(null, 'images');
   },
   filename: (req, file, cb) => {
-    console.log('tu sam -------------------');
     const name = file.originalname.toLowerCase().split(' ').join('-');
     const ext = MIME_TYPE_MAP[file.mimetype];
     console.log('ime=', name + '-' + '.' + ext);
@@ -56,6 +55,7 @@ const storage = multer.diskStorage({
 //
 router.post(
   '',
+  checkAuth,
   multer({ storage: storage }).single('image'),
   (req, res, next) => {
     const url = req.protocol + '://' + req.get('host');
@@ -90,6 +90,7 @@ router.post(
 //
 router.put(
   '/:id',
+  checkAuth,
   multer({ storage: storage }).single('image'),
   (req, res, next) => {
     console.log(req.body);
@@ -132,7 +133,7 @@ router.put(
 //
 // GET (ist kao i use get)
 // PATH: '/'
-router.get('', (req, res, next) => {
+router.get('', checkAuth, (req, res, next) => {
   const pageSize = parseInt(req.query.pagesize); // vrijednost je uvijek string
   const currentPage = parseInt(req.query.page);
   // Inicijaliziramo pocetno stanje query kojeg mozemo obradivatu u lancu zahtijeva
@@ -140,8 +141,6 @@ router.get('', (req, res, next) => {
   const postQuery = Post.find();
   let fetchedPosts; // treba nam jer moramo pronaci broj dokumenata
 
-  console.log('req.query='.blue, req.query);
-  console.log('ostQuery='.green, postQuery);
   if (pageSize && currentPage) {
     postQuery
       .skip(pageSize * (currentPage - 1)) // mongoose funkcija, preskace broj zapisa u bazi
@@ -155,7 +154,6 @@ router.get('', (req, res, next) => {
   // console.log('ostQuery='.bgBlue, postQuery);
   postQuery
     .then((data) => {
-      console.log('data'.bgBlue, data);
       fetchedPosts = data;
       return Post.count();
     })
@@ -174,7 +172,7 @@ router.get('', (req, res, next) => {
 //
 // DELETE POST
 // /:id
-router.delete('/:id', (req, res, next) => {
+router.delete('/:id', checkAuth, (req, res, next) => {
   Post.find({ _id: req.params.id })
     .then((data) => {
       console.log('datadelete----', data);
@@ -204,6 +202,4 @@ router.delete('/:id', (req, res, next) => {
     });
 });
 
-
-
-module.exports = router;  // dolazi kod svakog routera!!!
+module.exports = router; // dolazi kod svakog routera!!!

@@ -1,71 +1,79 @@
-const express = require('express');
 const path = require('path');
+const express = require('express');
 const dotenv = require('dotenv'); // Load config file
 const bodyParser = require('body-parser'); // bez ovoga ne mozemo slati podatke u req.body
 const mongoose = require('mongoose');
 const colors = require('colors');
 
-
-
-
-// const cookieParser = require('cookie-parser');
+const cookieParser = require('cookie-parser');
 // const mongoSanitize = require('express-mongo-sanitize');
 // const helmet = require('helmet');
 // const xss = require('xss-clean');
 // const rateLimit = require('express-rate-limit');
 // let hpp = require('hpp');
-// const cors = require('cors');
+const cors = require('cors');
 // const morgan = require('morgan');
 // const fileUpload = require('express-fileupload');
-// const connectDB = require('./config/db');
 
-// const logger = require('./middleware/logger');
 // const errorHandlerSvi = require('./middleware/error');
 
 // START express (NODE), inicijalizacija aplikacije
 const app = express();
 
+// definiramo path za file u koji spremamo potrebne varijable
+dotenv.config({ path: '.vscode/config.env' });
+
+mongoose
+  .connect(process.env.DATABASE, {
+    useNewUrlParser: true,
+    useCreateIndex: true,
+    useFindAndModify: false,
+    useUnifiedTopology: true,
+  })
+  .then(() => {
+    console.log(
+      `${process.env.OS}, Spojen na MongoDB, PORT= ${process.env.PORT}`.yellow
+        .bold
+    );
+    if (process.env.NODE_ENV === 'production') {
+      console.log(`Radim u ${process.env.NODE_ENV} modu`.underline.blue);
+    } else {
+      console.log(`Radim u ${process.env.NODE_ENV}-modu`.underline.blue);
+    }
+  })
+  .catch((err) => {
+    console.log('Ne mogu se spojiti'.red);
+    console.log(err.name);
+  });
+
 // Body parser, bez ovoga ne mozemo slati podatke u req.body , starija verzija!!!!!
 // app.use(express.json());
 // // isto kao i app.use(express.json());  nova verzija
 app.use(bodyParser.json());
+
+// SETUP Access-Control-Allow-Origin
+app.use((req, res, next) => {
+  res.setHeader('Access-Control-Allow-Origin', '*');
+  res.setHeader(
+    'Access-Control-Allow-Methods',
+    'OPTIONS,GET, POST, PUT, PATCH, DELETE'
+  );
+  res.setHeader(
+    'Access-Control-Allow-Headers',
+    'Origin, X-Requested-With, Content-Type, Accept, Authorization'
+  );
+  res.header("Access-Control-Allow-Credentials", true);
+  next();
+});
+
 // body -parser, bez ovoga ne salje podatke automatski kroz req.body (npm i body-parser)
 app.use(bodyParser.urlencoded({ extended: false }));
 
+// Cookie parser, za slanje TOKENA
+app.use(cookieParser());
+
 // ako udes u path sa slikama /images, idi na stazu
 app.use('/images', express.static(path.join(__dirname, 'images')));
-
-// definiramo path za file u koji spremamo potrebne varijable
-dotenv.config({ path: '.vscode/config.env' });
-
-// Definicija veze
-const connectDB = () => {
-  mongoose
-    .connect(process.env.DATABASE, {
-      useNewUrlParser: true,
-      useCreateIndex: true,
-      useFindAndModify: false,
-      useUnifiedTopology: true,
-    })
-    .then(() => {
-      console.log(
-        `${process.env.OS}, Spojen na MongoDB, PORT= ${process.env.PORT}`.yellow
-          .bold
-      );
-      if (process.env.NODE_ENV === 'production') {
-        console.log(`Radim u ${process.env.NODE_ENV} modu`.underline.blue);
-      } else {
-        console.log(`Radim u ${process.env.NODE_ENV}-modu`.underline.blue);
-      }
-    })
-    .catch((err) => {
-      console.log('Ne mogu se spojiti'.red);
-      console.log(err.name);
-    });
-};
-
-// Spajanje na bazu
-connectDB();
 
 //  ROUTE routs path files
 const postsRoutes = require('./routes/postsRoutes');
@@ -74,23 +82,6 @@ const userRouter = require('./routes/userRoutes');
 // const authRouter = require('./routes/authRouter');
 // const reviewsRouter = require('./routes/reviewsRouter');
 // const viewRouter = require('./routes/viewRouter');
-
-// SETUP Access-Control-Allow-Origin
-app.use((req, res, next) => {
-  res.setHeader('Access-Control-Allow-Origin', '*');
-  res.setHeader(
-    'Access-Control-Allow-Methods',
-    'OPTIONS, GET, POST, PUT, PATCH, DELETE'
-  );
-  res.setHeader(
-    'Access-Control-Allow-Headers',
-    'Origin, X-Requested-With, Content-Type, Accept'
-  );
-  next();
-});
-
-
-
 
 //
 // pokusni middeleware
@@ -113,9 +104,6 @@ console.log(colors.bgRed('START START START'));
 // app.set('view engine', 'ejs'); // za ejs
 // // kreiramo stazu odakle cemo vuci template
 // app.set('views', path.join(__dirname, 'views'));
-
-// // Cookie parser, za slanje TOKENA
-// app.use(cookieParser());
 
 // // MIDDLEWARE, pokusni
 // app.use(logger);
@@ -150,7 +138,7 @@ console.log(colors.bgRed('START START START'));
 // app.use(hpp());
 
 // Enable CORS
-// app.use(cors());
+app.use(cors());
 
 // // Set static folder, folder gdje se spremaju svi fileovi
 // app.use(express.static(path.join(__dirname, 'public')));

@@ -40,24 +40,18 @@ router.post('/login', (req, res, next) => {
   let userLogin;
   User.findOne({ email: req.body.email })
     .then((user) => {
-      console.log('user', user);
-
       if (!user) {
         return res.status(401).json({
           message: 'Autorizacija nije uspjela',
         });
       }
-
+      console.log(user);
       userLogin = user;
       // usporedujemo upisani password sa hasa-passwordom u bazi
       // rezultat je TRUE ili FALSE
       return bcrypt.compare(req.body.password, user.password);
     })
     .then((result) => {
-      console.log('result=', result);
-      console.log(req.user);
-      console.log(req.body);
-
       if (!result) {
         return res.status(401).json({
           message: 'Autorizacija nije uspjela',
@@ -67,14 +61,28 @@ router.post('/login', (req, res, next) => {
 
       // kreiramo token
       const token = jwt.sign(
-        { email: userLogin.email, userId: userLogin._id },
+        { email: userLogin.email },
         process.env.JWT_SECRET_WORD,
-        { expiresIn: '1h' }
+        { expiresIn: process.env.JWT_EXPIRE }
       );
+      console.log(token);
+
+      const options = {
+        expires: new Date(
+          Date.now() + process.env.JWT_COOKIE_EXPIRE * 24 * 60 * 60 * 1000
+        ),
+        httpOnly: true,
+        secure: true,
+      };
+
+      // if (process.env.NODE_ENV === 'production') {
+      //   console.log('production'.green);
+      //   options.secure = true;
+      // }
 
       res.status(200).json({
-        message: 'Logiranje uspjelo',
         token: token,
+        expiresIn: 3600,
       });
     })
     .catch((err) => {
