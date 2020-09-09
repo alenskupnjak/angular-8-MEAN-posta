@@ -22,7 +22,10 @@ export class LoginComponent implements OnInit {
     this.password = '1122'
   }
 
-  onSavePost(postForm: NgForm) {
+  onLogin(loginForm: NgForm) {
+    console.log(loginForm);
+    console.log(loginForm.value);
+
 
   }
 

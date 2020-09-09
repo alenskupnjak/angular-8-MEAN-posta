@@ -4,6 +4,7 @@ import { PostListComponent } from "./post/post-list/post-list.component";
 import { PostReactiveComponent } from "./post/post-reactive-driven-form/post-reactive.component";
 import { PostCreateEditTemplateFormComponent } from "./post/post-template-driven-form/post-create-edit-template-form.component";
 import { LoginComponent } from './auth/login/login.component';
+import { SignupComponent } from './auth/signup/signup.component';
 
 const routes: Routes = [
   { path: "", component: PostListComponent },
@@ -11,6 +12,7 @@ const routes: Routes = [
   { path: "createRDF", component:PostReactiveComponent },
   { path: "edit/:postId", component:PostReactiveComponent },
   { path: "login", component: LoginComponent },
+  { path: "signup", component: SignupComponent },
 ];
 
 @NgModule({

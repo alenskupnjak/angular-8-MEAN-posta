@@ -1,1 +1,36 @@
-<p>signup works!</p>
+<mat-card>
+  <mat-spinner *ngIf="isLoading"></mat-spinner>
+  <form (submit)="onSignup(signupForm)"  #signupForm="ngForm"  *ngIf="!isLoading">
+    <mat-form-field>
+      <input
+        matInput
+        name="email"
+        ngModel
+        type="email"
+        required
+        email
+        placeholder="Email adress Template driven form"
+        #emailInput="ngModel">
+        <mat-error *ngIf="emailInput.invalid">Upišite ispravnu vrijednost</mat-error>
+    </mat-form-field>
+
+    <mat-form-field>
+      <input
+      matInput
+      name="password"
+      ngModel
+      type="password"
+      required
+      placeholder=" Template driven form Password"
+      #passwordInput="ngModel">
+      <mat-error *ngIf="passwordInput.invalid">Upišite vrijednost</mat-error>
+    </mat-form-field>
+
+    <button
+      mat-raised-button
+      color="success"
+      type="submit">SignUp
+    </button>
+  </form>
+</mat-card>
+
