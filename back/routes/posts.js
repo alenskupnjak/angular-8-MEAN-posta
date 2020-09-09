@@ -133,29 +133,37 @@ router.put(
 // GET (ist kao i use get)
 // PATH: '/'
 router.get('', (req, res, next) => {
-  const pageSize = parseInt(req.query.pagesize);  // vrijednost je uvijek string
+  const pageSize = parseInt(req.query.pagesize); // vrijednost je uvijek string
   const currentPage = parseInt(req.query.page);
   // Inicijaliziramo pocetno stanje query kojeg mozemo obradivatu u lancu zahtijeva
-  // od njega krecemo i ratimo operacije, na kraku se poziva sam query.find
+  // od njega krecemo i ratimo operacije, na kraju se poziva sam query.find
   const postQuery = Post.find();
+  let fetchedPosts; // treba nam jer moramo pronaci broj dokumenata
 
   console.log('req.query='.blue, req.query);
-  console.log('pageSize='.bgGreen, pagesize);
-  console.log('router.get='.yellow, currentPage );
   console.log('ostQuery='.green, postQuery);
   if (pageSize && currentPage) {
     postQuery
-    // skip - ugradena mongoose funkcija, preskace broj zapisa u bazi
-    .skip(pageSize * (currentPage-1 ))
-    limit(pageSize) 
+      .skip(pageSize * (currentPage - 1)) // mongoose funkcija, preskace broj zapisa u bazi
+      .limit(pageSize);
   }
+  const fetchPost = postQuery.then((data) => {
+    return Post.count();
+  });
 
   // nakon obrade svih query-a krecemo dalje u rad
+  // console.log('ostQuery='.bgBlue, postQuery);
   postQuery
-    .then((dataPosts) => {
+    .then((data) => {
+      console.log('data'.bgBlue, data);
+      fetchedPosts = data;
+      return Post.count();
+    })
+    .then((brojDokumenata) => {
       res.status(200).json({
-        message: 'Uspjesno dohvacei podaci iz baze',
-        posts: dataPosts,
+        message: 'Uspjesno dohvaceni podaci iz baze',
+        brojDokumenata: brojDokumenata,
+        posts: fetchedPosts,
       });
     })
     .catch((err) => {

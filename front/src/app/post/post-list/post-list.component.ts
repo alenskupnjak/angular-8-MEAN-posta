@@ -1,5 +1,5 @@
 import { Component, OnInit, OnDestroy } from "@angular/core";
-import {PageEvent} from '@angular/material/paginator';
+import { PageEvent } from "@angular/material/paginator";
 import { Subscription } from "rxjs";
 
 // kreirane komponente
@@ -12,45 +12,53 @@ import { PostService } from "../post.service";
   styleUrls: ["./post-list.component.css"],
 })
 export class PostListComponent implements OnInit, OnDestroy {
-  // property ... Prima podatke ....
-  postaUlazna: Post[] = [];
+
+  postaUlazna: Post[] = [];  // property ... Prima podatke ....
   isLoading = false; // definiranje spinerra
 
-  // varijeble paginacije
-  totalPost = 5;
-  postPerPage = 3;
-  pageSizeOptions = [1, 2, 5, 10];
+  totalPost = 0; // paginacija ,ukupna duljina liste
+  postPerPage = 3;  // paginacija ,zapisa po stranici
+  currentPage = 1; // trenutna stranica
+  pageSizeOptions = [1, 2, 5, 10, 30]; // definira koliko cemo max. prikazivati na stranici
 
-  // definiramo varijablu zbog memory leak-a...
-  private postsSub: Subscription;
+  private postsSub: Subscription; // definiramo varijablu zbog memory leak-a...
 
-  constructor(public postService: PostService) {}
-
-  // methods....
+  // ISTO je pisati i:  constructor(public postService: PostService)
+  postService: PostService;
+  constructor(postService: PostService) {
+    this.postService = postService;
+  }
   ngOnInit() {
     this.isLoading = true; // definiranje spinerra
 
-    // u prvom prolazu dohvaca podatke ako ih ima
-    // this.postaUlazna = this.postService.getPosts(); // verzija 1
-    this.postService.getPosts();
+    // Povlačimo podatke iz baze
+    this.postService.getPosts(this.postPerPage, this.currentPage);
 
     // OBSERVER- slušamo promjenu podataka
     this.postsSub = this.postService
       .getPostUpdateListener() // ovo predstavlja okidač za promjenu na ekranu
-      .subscribe((posts: Post[]) => {
-        // promjena ceijednosti postaUlazna koja je u HTML templatu
+      .subscribe((data: { posts: Post[]; brojDokumenata: number }) => {
+        console.log("data subscribe", data);
+
+        // promjena vrijednosti postaUlazna koja je u HTML templatu
         // angular automatski renderira stranicu ponovo
-        this.postaUlazna = posts;
+        this.totalPost = data.brojDokumenata;
+        this.postaUlazna = data.posts;
+        this.isLoading = false; // definiranje spinerra
       });
-    this.isLoading = false;
   }
 
-  onChangePage(pageData :PageEvent) {
-    console.log(pageData);
-
-
+  // svaka promjena na paginatoru se reflektira
+  onChangePage(pageData: PageEvent) {
+    console.log("pageData==", pageData);
+    this.isLoading = true; // definiranje spinerra
+    this.postPerPage = pageData.pageSize;
+    this.currentPage = pageData.pageIndex + 1;
+    this.postService.getPosts(this.postPerPage, this.currentPage);
   }
 
+  //
+  // Brišemo stranicu
   onDelete(id: string) {
     this.postService.postDelete(id);
   }

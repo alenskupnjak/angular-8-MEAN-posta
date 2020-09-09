@@ -14,11 +14,11 @@ export class HeaderComponent implements OnInit, OnDestroy {
   constructor(public postService: PostService) {}
 
   ngOnInit() {
-    // ovo je za vjezbu
+    // ovo je za vjezbu ZAPAMTI OVO!!!!!!!
     this.postsSub = this.postService
       .getPostUpdateListener()
       .subscribe((data) => {
-        console.log("Ja Header, sam cuo sam da se je podatak promjenio... :)");
+        console.log("Ja Header, sam cuo sam da se je podatak promjenio... :)",data);
       });
   }
 

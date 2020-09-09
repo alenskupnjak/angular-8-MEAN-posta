@@ -4,62 +4,78 @@ import { HttpClient } from "@angular/common/http";
 import { Injectable } from "@angular/core";
 import { map } from "rxjs/operators";
 import { Router } from "@angular/router";
-import {environment} from '../../environments/environment'
+import { environment } from "../../environments/environment";
 
 @Injectable() // ovo mora biti za provider !!!!
 export class PostService {
   // osnovno polje iz kojeg vučemo podatke koji ce se prikazivati na ekranu
   private posts: Post[] = [];
 
+  // podaci za paginaciju z cijeli servis
+  totalPost;
+  postPerPageServis = 5;
+  currentPageServis = 1;
+
   // OBSERVABLE  ---kojim cemo slati obavijest o promjeni podatka kroz program
-  private postUpdated = new Subject<Post[]>();
+  private postUpdated = new Subject<{posts: Post[];brojDokumenata: number}>();
 
   constructor(public http: HttpClient, private router: Router) {}
-
+  // *********************************************
   //
   // povlačenje podataka sa mreže
-  getPosts() {
-    console.log('Staza-',environment.path);
+  getPosts(postPerPage: number, currentPage: number) {
+    this.postPerPageServis = postPerPage;
+    this.currentPageServis = currentPage;
+    const queryParams = `?pagesize=${postPerPage}&page=${currentPage}`;
+    console.log("Link=", `${environment.path}/api/posts` + queryParams);
 
     // uvijek radis kopiju polja
     // return [...this.posts];
     this.http
-      // <{ definiramo ulazne vrijednosti kje ce biti kao objekt}>
+      // <{ definiramo ulazne vrijednosti koje ce biti kao objekt}>
       // posts je namjerno stavljen any da možemo transformirati _id u id.....
-      .get<{ message: string; posts: any }>(`${environment.path}/api/posts`)
-
+      .get<{ message: string; posts: any; brojDokumenata: number }>(
+        `${environment.path}/api/posts` + queryParams
+      )
       // ovaj dio je visak jer se ID automatski povezuje sa _id
       .pipe(
         // map ekvivalentan map u JS, ali dolazi iz rxJS
         map((postData) => {
-          console.log(postData);
-          return postData.posts.map((data, index) => {
-            return {
-              title: data.title,
-              content: data.content,
-              id: data._id,
-              imagePath: data.imagePath,
-            };
-          });
+          console.log("postData====", postData);
+          // vračam objekt
+          return {
+            posts: postData.posts.map((data, index) => {
+              return {
+                title: data.title,
+                content: data.content,
+                id: data._id,
+                imagePath: data.imagePath,
+              };
+            }),
+            brojDokumenata: postData.brojDokumenata,
+          };
         })
       )
       .subscribe((dataPost) => {
-        console.log(dataPost);
+        console.log("dataPost=**********", dataPost);
 
-        this.posts = dataPost;
+        this.posts = dataPost.posts;
         // saljemo signap u program...
-        this.postUpdated.next([...this.posts]);
+        this.postUpdated.next({
+          posts: [...this.posts],
+          brojDokumenata: dataPost.brojDokumenata,
+        });
       });
   }
 
-  //
+  // *********************************************
   // OBSERVABLE - ova funkcija je triger na promjene u post podacima
   getPostUpdateListener() {
     // ako se mijenja vrijednost postupdate, salje signal
     return this.postUpdated.asObservable();
   }
 
-  //
+  // *********************************************
   // dodavanje novog zapisa
   addPost(title: string, content: string, image: File) {
     // const post: Post = {
@@ -91,13 +107,14 @@ export class PostService {
 
         this.posts.push(post);
         // šaljemo podatak u program sa next....
-        this.postUpdated.next([...this.posts]);
+        this.postUpdated.next({ posts: [...this.posts], brojDokumenata: 1 });
         // this.getPosts(); staro rijesenje
         // vracamo na listu svih postova
         this.router.navigate(["/"]);
       });
   }
 
+  // *****************************
   // dohvacane jednog posta preko ID
   getPost(id: string) {
     return this.posts.find((data) => {
@@ -105,10 +122,11 @@ export class PostService {
     });
   }
 
+  //*******************************
   // UPDATE post
   updatePost(id: string, title: string, content: string, image: any) {
     let postData: Post | FormData;
-    console.log(typeof image === "object");
+    // console.log(typeof image === "object");
 
     if (typeof image === "object") {
       postData = new FormData();
@@ -133,6 +151,8 @@ export class PostService {
       });
   }
 
+  // *****************************
+  //
   // brisanje zapisa iz baze
   postDelete(id: string) {
     console.log("  postDelete ID =", id);
@@ -144,7 +164,8 @@ export class PostService {
       .delete(`${environment.path}/api/posts/` + id)
       .subscribe((data) => {
         console.log("Podatak obrisan");
-        this.getPosts();
+        // povlačim sve podatke
+        this.getPosts(this.postPerPageServis, this.currentPageServis);
       });
   }
 }
