@@ -1,7 +1,10 @@
 import { Component, OnInit, OnDestroy } from "@angular/core";
+import {PageEvent} from '@angular/material/paginator';
+import { Subscription } from "rxjs";
+
+// kreirane komponente
 import { Post } from "../post.model";
 import { PostService } from "../post.service";
-import { Subscription } from "rxjs";
 
 @Component({
   selector: "app-post-list",
@@ -12,6 +15,11 @@ export class PostListComponent implements OnInit, OnDestroy {
   // property ... Prima podatke ....
   postaUlazna: Post[] = [];
   isLoading = false; // definiranje spinerra
+
+  // varijeble paginacije
+  totalPost = 5;
+  postPerPage = 3;
+  pageSizeOptions = [1, 2, 5, 10];
 
   // definiramo varijablu zbog memory leak-a...
   private postsSub: Subscription;
@@ -34,13 +42,18 @@ export class PostListComponent implements OnInit, OnDestroy {
         // angular automatski renderira stranicu ponovo
         this.postaUlazna = posts;
       });
-      this.isLoading = false;
+    this.isLoading = false;
+  }
+
+  onChangePage(pageData :PageEvent) {
+    console.log(pageData);
+
+
   }
 
   onDelete(id: string) {
     this.postService.postDelete(id);
   }
-
 
   // cuvamo od memory leak-a
   ngOnDestroy() {

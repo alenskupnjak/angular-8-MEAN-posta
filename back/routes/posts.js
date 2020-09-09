@@ -3,6 +3,7 @@ const Post = require('../models/post');
 const router = express.Router();
 const multer = require('multer');
 const fs = require('fs');
+const colors = require('colors');
 
 // ta rad u MULTER
 const MIME_TYPE_MAP = {
@@ -52,6 +53,7 @@ const storage = multer.diskStorage({
 
 //
 // POST, dodavanje zappisa u BAZU
+//
 router.post(
   '',
   multer({ storage: storage }).single('image'),
@@ -76,7 +78,7 @@ router.post(
           title: createdPost.title,
           content: createdPost.content,
           imagePath: createdPost.imagePath,
-          imagePathRelative: createdPost.imagePath
+          imagePathRelative: createdPost.imagePath,
         },
       });
     });
@@ -85,6 +87,7 @@ router.post(
 
 //
 // PUT
+//
 router.put(
   '/:id',
   multer({ storage: storage }).single('image'),
@@ -106,7 +109,7 @@ router.put(
       console.log(data);
       // obrisi file
       console.log('tototot');
-      
+
       // fs.unlink(
       //   'images/' + req.file.filename,
       //   (err) => {
@@ -118,7 +121,6 @@ router.put(
       //   }
       // );
 
-
       res.status(201).json({
         message: 'Update uspio',
         data: post,
@@ -129,17 +131,30 @@ router.put(
 
 //
 // GET (ist kao i use get)
+// PATH: '/'
 router.get('', (req, res, next) => {
-  // posts = [
-  //   { id: '01', title: 'Naslov 01', content: 'sadrzaj 01' },
-  //   { id: '02', title: 'Naslov 02', content: 'sadrzaj 02' },
-  //   { id: '03', title: 'Naslov 03', content: 'sadrzaj 03' },
-  // ];
-  posts = [];
-  Post.find()
+  const pageSize = parseInt(req.query.pagesize);  // vrijednost je uvijek string
+  const currentPage = parseInt(req.query.page);
+  // Inicijaliziramo pocetno stanje query kojeg mozemo obradivatu u lancu zahtijeva
+  // od njega krecemo i ratimo operacije, na kraku se poziva sam query.find
+  const postQuery = Post.find();
+
+  console.log('req.query='.blue, req.query);
+  console.log('pageSize='.bgGreen, pagesize);
+  console.log('router.get='.yellow, currentPage );
+  console.log('ostQuery='.green, postQuery);
+  if (pageSize && currentPage) {
+    postQuery
+    // skip - ugradena mongoose funkcija, preskace broj zapisa u bazi
+    .skip(pageSize * (currentPage-1 ))
+    limit(pageSize) 
+  }
+
+  // nakon obrade svih query-a krecemo dalje u rad
+  postQuery
     .then((dataPosts) => {
       res.status(200).json({
-        message: 'Uspjeh',
+        message: 'Uspjesno dohvacei podaci iz baze',
         posts: dataPosts,
       });
     })
@@ -150,24 +165,21 @@ router.get('', (req, res, next) => {
 
 //
 // DELETE POST
+// /:id
 router.delete('/:id', (req, res, next) => {
-  console.log(req.params.id);
-
   Post.find({ _id: req.params.id })
     .then((data) => {
       console.log('datadelete----', data);
       console.log('datadelete', data[0].imagePathRelative);
 
-      fs.unlink(
-        data[0].imagePathRelative,
-        (err) => {
-          try {
-            console.log('Obrisao file cc');
-          } catch (error) {
-            console.log(error);
-          }
+      // brišem file koji imam u direktoziju
+      fs.unlink(data[0].imagePathRelative, (err) => {
+        try {
+          console.log('Obrisao file cc');
+        } catch (error) {
+          console.log(error);
         }
-      );
+      });
 
       return data[0].id;
     })
