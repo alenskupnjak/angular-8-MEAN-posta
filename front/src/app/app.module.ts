@@ -1,8 +1,12 @@
+// deeppurple-amber.css
+// indigo-pink.css
+// pink-bluegrey.css
+// purple-green.css
 import { BrowserModule } from "@angular/platform-browser";
 import { NgModule } from "@angular/core";
 import { BrowserAnimationsModule } from "@angular/platform-browser/animations";
 import { FormsModule } from "@angular/forms"; // za  [(ngModel)] Template driven forme
-import { ReactiveFormsModule } from "@angular/forms"; // za  [(ngModel)] Reactive driven forme
+import { ReactiveFormsModule } from "@angular/forms"; // za Reactive driven forme
 import { MatInputModule } from "@angular/material/input";
 import { MatButtonModule } from "@angular/material/button";
 import { MatCardModule } from "@angular/material/card";
@@ -22,6 +26,8 @@ import { HeaderComponent } from "./header/header.component";
 import { PostListComponent } from "./post/post-list/post-list.component";
 import { PostService } from "./post/post.service";
 import { AppRoutingModule } from "./app-routing.module";
+import { LoginComponent } from './auth/login/login.component';
+import { SignupComponent } from './auth/signup/signup.component';
 
 @NgModule({
   declarations: [
@@ -30,32 +36,29 @@ import { AppRoutingModule } from "./app-routing.module";
     PostReactiveComponent,
     HeaderComponent,
     PostListComponent,
+    LoginComponent,
+    SignupComponent,
   ],
   imports: [
     BrowserModule,
     AppRoutingModule, // za router
-    FormsModule, // za  [(ngModel)]
+    FormsModule, // Template driven forme [(ngModel)]
     BrowserAnimationsModule, // material
     MatInputModule, // omogučava nam pristup komponentama
-    MatButtonModule,
-    MatCardModule,
-    MatToolbarModule,
+    MatButtonModule, // material
+    MatCardModule, // material
+    MatToolbarModule, // material
     MatExpansionModule,
     HttpClientModule,
-    MatProgressSpinnerModule,
-    ReactiveFormsModule,
-    MatPaginatorModule
+    MatProgressSpinnerModule, // material
+    ReactiveFormsModule, // REACTIVE FORMS
+    MatPaginatorModule  // material, paginacija
   ],
   providers: [PostService],
   bootstrap: [AppComponent],
 })
 export class AppModule {}
 
-// MATERIAL
-// ng add @angular/material@8.2.3 +
-// ng add @angular/cdk@8.2.3 +
 
-// deeppurple-amber.css
-// indigo-pink.css
-// pink-bluegrey.css
-// purple-green.css
+
+

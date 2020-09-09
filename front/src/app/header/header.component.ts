@@ -18,7 +18,7 @@ export class HeaderComponent implements OnInit, OnDestroy {
     this.postsSub = this.postService
       .getPostUpdateListener()
       .subscribe((data) => {
-        console.log("Ja Header, sam cuo sam da se je podatak promjenio... :)",data);
+        console.log("Ja Header, sam cuo sam da se je podatak promjenio u servisu... :)",data);
       });
   }
 
