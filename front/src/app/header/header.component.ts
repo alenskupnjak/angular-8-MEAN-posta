@@ -33,7 +33,7 @@ export class HeaderComponent implements OnInit, OnDestroy {
     this.authLisenerSubs = this.authServices
       .getAuthStatusLisener()
       .subscribe((res) => {
-        console.log("Header, cuo sam promjenu podataka u Authservisu... ", res);
+        console.log("Header, cuo sam o promjeni podataka u Authservisu!", res);
         this.isLogin = res;
       });
   }

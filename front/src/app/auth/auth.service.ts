@@ -2,9 +2,9 @@ import { Injectable } from "@angular/core";
 import { HttpClient } from "@angular/common/http";
 import { Router } from "@angular/router";
 import { environment } from "../../environments/environment";
-import { AuthData } from "./auth-data";
 import { Subject } from "rxjs";
 
+import { AuthData } from "./auth-data";
 //
 @Injectable({ providedIn: "root" })
 export class AuthServices {
@@ -58,6 +58,7 @@ export class AuthServices {
           // ovo se aktivira samo kod LOGIN i LOGOUT.
           // saljem podatke svim componentama  koje su AKTIVNE!! da je neko logiran
           this.authStatusLisener.next(true);
+          this.router.navigate(['/']);
         }
       });
   }
@@ -69,5 +70,6 @@ export class AuthServices {
     this.isLogin = false;
     // saljam signal u header da sam odlogiran
     this.authStatusLisener.next(false);
+    this.router.navigate(['/']);
   }
 }
