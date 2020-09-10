@@ -44,7 +44,6 @@ export class PostService {
       .pipe(
         // map ekvivalentan map u JS, ali dolazi iz rxJS
         map((postData) => {
-          console.log("postData====", postData);
           // vračam objekt
           return {
             posts: postData.posts.map((data, index) => {

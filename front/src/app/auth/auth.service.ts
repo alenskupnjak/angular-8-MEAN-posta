@@ -5,11 +5,12 @@ import { environment } from "../../environments/environment";
 import { Subject } from "rxjs";
 
 import { AuthData } from "./auth-data";
-//
+
 @Injectable({ providedIn: "root" })
 export class AuthServices {
   private isLogin = false;
-  token: string;
+  private token: string;
+  private tokenTimer: any;
   private authStatusLisener = new Subject<boolean>();
 
   constructor(private http: HttpClient, private router: Router) {}
@@ -47,29 +48,110 @@ export class AuthServices {
       password: password,
     };
     this.http
-      .post<{ token: string }>(`${environment.path}/api/user/login`, authData)
+      .post<{ token: string; expiresIn: number }>(
+        `${environment.path}/api/user/login`,
+        authData
+      )
       .subscribe((res) => {
         const token = res.token;
         this.token = token;
         if (token) {
+          // vrijednost u sekunadama
+          const expiresInDuration = res.expiresIn;
+          this.setAuthTimer(expiresInDuration);
           // ovdje spremam informaciju za nerenderirane stranice nakon LOGINA
           this.isLogin = true;
 
           // ovo se aktivira samo kod LOGIN i LOGOUT.
           // saljem podatke svim componentama  koje su AKTIVNE!! da je neko logiran
           this.authStatusLisener.next(true);
-          this.router.navigate(['/']);
+
+          // snimamo token i expiredtime u LOCALSTORAGE
+          const now = new Date();
+          console.log("datum=", now, now.getTime());
+          console.log("datum xx=", now.getTime());
+          const expirationDate = new Date(
+            now.getTime() + expiresInDuration * 1000
+          );
+
+          // snimanje podataka u localStorage
+          this.saveAuthData(token, expirationDate);
+
+          this.router.navigate(["/"]);
         }
       });
   }
 
   //
   // Logout
-  logout(){
+  logout() {
     this.token = null;
     this.isLogin = false;
     // saljam signal u header da sam odlogiran
     this.authStatusLisener.next(false);
-    this.router.navigate(['/']);
+    this.router.navigate(["/"]);
+    // brisem timer koji sam postavio da nakon expiresInDuration se odlogira
+    clearTimeout(this.tokenTimer);
+    this.clearAuthData();
+  }
+
+  // private oznacava da je moguce pristup samo unutar ove klase
+  //
+  private saveAuthData(token: string, expirationDate: Date) {
+    localStorage.setItem("tokenPostaAngular", token);
+    localStorage.setItem(
+      "expirationPostaAmgular",
+      expirationDate.toISOString()
+    );
+  }
+
+  private clearAuthData() {
+    localStorage.removeItem("tokenPostaAngular");
+    localStorage.removeItem("expirationPostaAmgular");
+  }
+
+  //
+  // provjeravamo da li korisnik vec logiran
+  autoAuthUser() {
+    const authInformation = this.getAuthData();
+    // ako nema zapisa izbacujemo iz autentifikacije
+    if (!authInformation) {
+      return;
+    }
+    // provjeravamo dali je token istekao
+    const expiresIn =
+      authInformation.expirationDate.getTime() - new Date().getTime();
+
+    console.log(authInformation, expiresIn);
+
+    if (expiresIn > 0) {
+      this.token = authInformation.token;
+      this.isLogin = true;
+      this.setAuthTimer(expiresIn / 1000);
+      this.authStatusLisener.next(true);
+    }
+  }
+
+  // vrijeme u sekunadama
+  private setAuthTimer(duration: number) {
+    console.log("Seting timer= " + duration);
+
+    // nakon sto protekne vrijeme (expiresInDuration), automatski odlogira korisnika
+    this.tokenTimer = setTimeout(() => {
+      this.logout();
+    }, duration * 1000); // milisekunde
+  }
+
+  private getAuthData() {
+    const token = localStorage.getItem("tokenPostaAngular");
+    const expirationDate = localStorage.getItem("expirationPostaAmgular");
+    if (!token || !expirationDate) {
+      return;
+    }
+    // ako zapisi postoje vracam zapis
+    return {
+      token: token,
+      expirationDate: new Date(expirationDate),
+    };
   }
 }

@@ -20,6 +20,7 @@ export class HeaderComponent implements OnInit, OnDestroy {
   ) {}
 
   ngOnInit() {
+    this.isLogin = this.authServices.getIsAuth();
     // ovo je za vjezbu ZAPAMTI OVO!!!!!!!
     this.postsSub = this.postService
       .getPostUpdateListener()
