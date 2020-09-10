@@ -50,7 +50,7 @@ export class PostService {
                 content: data.content,
                 id: data._id,
                 imagePath: data.imagePath,
-                creator: data.creator
+                creator: data.creator,
               };
             }),
             brojDokumenata: postData.brojDokumenata,
@@ -127,11 +127,8 @@ export class PostService {
   // UPDATE post
   updatePost(id: string, title: string, content: string, image: any) {
     let postData: Post | FormData;
-
-    console.log('****************', image);
-
-    // console.log(typeof image === "object");
-
+    // provjeravamo da lje podatak iz forme novi file slikama
+    // ili je ostao stari link
     if (typeof image === "object") {
       postData = new FormData();
       postData.append("id", id);

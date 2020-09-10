@@ -101,12 +101,12 @@ router.put(
   multer({ storage: storage }).single('image'),
   (req, res, next) => {
     let imagePath = req.body.imagePath;
-    let imagePathRelative
+    let imagePathRelative;
 
     if (imagePath) {
       const regex = /images/g;
       const indexImage = imagePath.search(regex);
-      imagePathRelative  = imagePath.slice(indexImage);
+      imagePathRelative = imagePath.slice(indexImage);
     }
     if (req.file) {
       const url = req.protocol + '://' + req.get('host');
@@ -123,9 +123,16 @@ router.put(
       imagePathRelative: imagePathRelative,
     });
 
-    Post.findOne({ _id: req.params.id })
-      .then((res) => {
-        // brišem file samo ako je je selektiran novi file
+    Post.findOne({ _id: req.params.id, creator: req.userData.userId })
+      .then((data) => {
+        console.log(data, !data);
+
+        if (!data) {
+          res.status(401).json({
+            message: 'Ovaj korisnik autor ove poste, UPDATE',
+          });
+        }
+        // brišem stari file samo ako je je selektiran novi file
         if (req.file) {
           fs.unlink(res.imagePathRelative, (err) => {
             try {
@@ -135,16 +142,26 @@ router.put(
             }
           });
         }
-        return res;
+        return data;
       })
       .then((data) => {
+        if (!data) {
+          return res.status(401).json({
+            message: 'Ovaj korisnik nije autor ove poste, UPDATE',
+          });
+        }
         // radimo update posta...
         Post.updateOne({ _id: req.params.id }, post).then((data) => {
+          console.log('Update uspio'.green);
           res.status(201).json({
             message: 'Update uspio',
             data: post,
           });
         });
+      })
+      .catch((err) => {
+        console.log('Neuspio update');
+        console.log(err);
       });
   }
 );
@@ -166,7 +183,7 @@ router.get('', (req, res, next) => {
       .limit(pageSize);
   }
   const fetchPost = postQuery.then((data) => {
-    return Post.count();
+    return Post.countDocuments();
   });
 
   // nakon obrade svih query-a krecemo dalje u rad
@@ -192,11 +209,14 @@ router.get('', (req, res, next) => {
 // DELETE POST
 // /:id
 router.delete('/:id', checkAuth, (req, res, next) => {
-  Post.find({ _id: req.params.id })
+  Post.find({ _id: req.params.id, creator: req.userData.userId })
     .then((data) => {
-      console.log('datadelete----', data);
-      console.log('datadelete', data[0].imagePathRelative);
-
+      if (data.length === 0) {
+        res.status(401).json({
+          message: 'Ovaj korisnik nije autor ove poste, DELETE',
+        });
+      }
+      console.log('datadelete---------------------');
       // brišem file koji imam u direktoziju
       fs.unlink(data[0].imagePathRelative, (err) => {
         try {
@@ -205,7 +225,6 @@ router.delete('/:id', checkAuth, (req, res, next) => {
           console.log(error);
         }
       });
-
       return data[0].id;
     })
     .then((data) => {
@@ -217,6 +236,7 @@ router.delete('/:id', checkAuth, (req, res, next) => {
       });
     })
     .catch((err) => {
+      console.log('nesupjelo brisanje!');
       console.log(err);
     });
 });
