@@ -45,13 +45,17 @@ router.post('/login', (req, res, next) => {
           message: 'Autorizacija nije uspjela',
         });
       }
-      console.log(user);
+      
+      console.log('user==',user);
+      
+      // treba nam ovaj podatak da mozemo poslat u jwt.sign userId
       userLogin = user;
       // usporedujemo upisani password sa hasa-passwordom u bazi
       // rezultat je TRUE ili FALSE
       return bcrypt.compare(req.body.password, user.password);
     })
     .then((result) => {
+      // TRUE il FALSE
       if (!result) {
         return res.status(401).json({
           message: 'Autorizacija nije uspjela',
@@ -61,7 +65,7 @@ router.post('/login', (req, res, next) => {
 
       // kreiramo token
       const token = jwt.sign(
-        { email: userLogin.email },
+        { email: userLogin.email, userId: userLogin._id },
         process.env.JWT_SECRET_WORD,
         { expiresIn: process.env.JWT_EXPIRE }
       );

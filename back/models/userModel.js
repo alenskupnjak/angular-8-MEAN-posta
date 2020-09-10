@@ -14,10 +14,7 @@ const userSchema = mongoose.Schema(
     },
     name: {
       type: String,
-    },
-    podaci: {
-      type: String,
-    },
+    }
   },
   { timestamps: true }
 );

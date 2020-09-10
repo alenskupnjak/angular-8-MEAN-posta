@@ -59,7 +59,7 @@ router.post(
   multer({ storage: storage }).single('image'),
   (req, res, next) => {
     const url = req.protocol + '://' + req.get('host');
-    console.log(req.body);
+    console.log(req.userData);
 
     // kreiramo post
     const post = new Post({
@@ -67,21 +67,28 @@ router.post(
       content: req.body.content,
       imagePath: url + '/images/' + req.file.filename,
       imagePathRelative: 'images/' + req.file.filename,
+      creator: req.userData.userId,
     });
 
     // snimimo podatak u BAZU
-    post.save().then((createdPost) => {
-      res.status(201).json({
-        message: 'Uspjeh',
-        podatak: {
-          id: createdPost._id,
-          title: createdPost.title,
-          content: createdPost.content,
-          imagePath: createdPost.imagePath,
-          imagePathRelative: createdPost.imagePath,
-        },
+    post
+      .save()
+      .then((createdPost) => {
+        res.status(201).json({
+          message: 'Uspjeh',
+          podatak: {
+            id: createdPost._id,
+            title: createdPost.title,
+            content: createdPost.content,
+            imagePath: createdPost.imagePath,
+            imagePathRelative: createdPost.imagePath,
+          },
+        });
+      })
+      .catch((err) => {
+        console.log('Graška kod snimanja podataka');
+        console.log(err);
       });
-    });
   }
 );
 

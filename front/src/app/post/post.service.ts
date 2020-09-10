@@ -23,7 +23,7 @@ export class PostService {
   }>();
 
   constructor(public http: HttpClient, private router: Router) {}
-  
+
   // *********************************************
   //
   // povlačenje podataka sa mreže
@@ -50,6 +50,7 @@ export class PostService {
                 content: data.content,
                 id: data._id,
                 imagePath: data.imagePath,
+                creator: data.creator
               };
             }),
             brojDokumenata: postData.brojDokumenata,
@@ -57,6 +58,8 @@ export class PostService {
         })
       )
       .subscribe((dataPost) => {
+        console.log(dataPost);
+
         this.posts = dataPost.posts;
         // saljemo signap u program...
         this.postUpdated.next({
