@@ -23,6 +23,7 @@ export class PostService {
   }>();
 
   constructor(public http: HttpClient, private router: Router) {}
+  
   // *********************************************
   //
   // povlačenje podataka sa mreže
@@ -30,10 +31,7 @@ export class PostService {
     this.postPerPageServis = postPerPage;
     this.currentPageServis = currentPage;
     const queryParams = `?pagesize=${postPerPage}&page=${currentPage}`;
-    console.log("Link=", `${environment.path}/api/posts` + queryParams);
 
-    // uvijek radis kopiju polja
-    // return [...this.posts];
     this.http
       // <{ definiramo ulazne vrijednosti koje ce biti kao objekt}>
       // posts je namjerno stavljen any da možemo transformirati _id u id.....
@@ -59,8 +57,6 @@ export class PostService {
         })
       )
       .subscribe((dataPost) => {
-        console.log("dataPost=**********", dataPost);
-
         this.posts = dataPost.posts;
         // saljemo signap u program...
         this.postUpdated.next({

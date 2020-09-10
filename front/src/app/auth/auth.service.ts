@@ -76,7 +76,6 @@ export class AuthServices {
 
           // snimanje podataka u localStorage
           this.saveAuthData(token, expirationDate);
-
           this.router.navigate(["/"]);
         }
       });
