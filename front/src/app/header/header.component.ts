@@ -13,6 +13,7 @@ export class HeaderComponent implements OnInit, OnDestroy {
   private postsSub: Subscription;
   private authLisenerSubs: Subscription;
   isLogin = false; // u startu nema logiranog usera
+  trenutniKorisnik: string;
 
   constructor(
     public postService: PostService,
@@ -33,11 +34,14 @@ export class HeaderComponent implements OnInit, OnDestroy {
       .subscribe((res) => {
         console.log("Header, cuo sam o promjeni podataka u Authservisu!", res);
         this.isLogin = res;
+        this.trenutniKorisnik= this.authServices.trenutniKorisnik();
       });
+
+      this.trenutniKorisnik= this.authServices.trenutniKorisnik();
   }
 
   //
-  // Izlazak iz aplikacije, odlogitan, brise se token
+  // Izlazak iz aplikacije, odlogiranjean, brise se token
   onLogout() {
     this.authServices.logout();
   }

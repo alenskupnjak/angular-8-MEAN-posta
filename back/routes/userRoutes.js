@@ -69,11 +69,13 @@ router.post('/login', (req, res, next) => {
         process.env.JWT_SECRET_WORD,
         { expiresIn: process.env.JWT_EXPIRE }
       );
-
+        console.log('userLogin'.bgRed,userLogin);
+        
       res.status(200).json({
         token: token,
         expiresIn: 3600,
-        loginUser: userLogin._id
+        loginUser: userLogin._id,
+        loginUserName: userLogin.email,
       });
     })
     .catch((err) => {

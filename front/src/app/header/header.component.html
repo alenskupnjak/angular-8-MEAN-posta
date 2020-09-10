@@ -1,9 +1,12 @@
 <mat-toolbar color="primary">
-  <span><a routerLink="/" >Moje poruke</a></span>
+  <span><a routerLink="/">Moje poruke</a></span>
 
   <span class="spacer"></span>
 
   <ul>
+    <li *ngIf="isLogin">
+      <a mat-button routerLinkActive="mat-accent">User: {{trenutniKorisnik}}</a>
+    </li>
     <li *ngIf="isLogin">
       <a mat-button routerLink="/createRDF" routerLinkActive="mat-accent">Reactive Form</a>
     </li>

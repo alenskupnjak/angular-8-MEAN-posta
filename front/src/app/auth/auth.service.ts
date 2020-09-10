@@ -11,6 +11,7 @@ export class AuthServices {
   private isLogin = false;
   private token: string;
   private userIdTrenutnoLogiran: string;
+  private userEmail: string;
   private tokenTimer: any;
   private authStatusLisener = new Subject<boolean>();
 
@@ -23,6 +24,10 @@ export class AuthServices {
   // definira status logiranja: TRUE ili FALSE
   getIsAuth() {
     return this.isLogin;
+  }
+
+  trenutniKorisnik() {
+    return this.userEmail;
   }
 
   // definira status logiranja: TRUE ili FALSE
@@ -58,6 +63,7 @@ export class AuthServices {
         token: string;
         expiresIn: number;
         loginUser: string;
+        loginUserName: string;
       }>(`${environment.path}/api/user/login`, authData)
       .subscribe((res) => {
         const token = res.token;
@@ -71,6 +77,7 @@ export class AuthServices {
 
           // trenutno logiran korisnik
           this.userIdTrenutnoLogiran = res.loginUser;
+          this.userEmail = res.loginUserName;
 
           // ovo se aktivira samo kod LOGIN i LOGOUT.
           // saljem podatke svim componentama  koje su AKTIVNE!! da je neko logiran
@@ -83,7 +90,12 @@ export class AuthServices {
           );
 
           // snimanje podataka u localStorage
-          this.saveAuthData(token, expirationDate, this.userIdTrenutnoLogiran);
+          this.saveAuthData(
+            token,
+            expirationDate,
+            this.userIdTrenutnoLogiran,
+            this.userEmail
+          );
           this.router.navigate(["/"]);
         }
       });
@@ -105,8 +117,14 @@ export class AuthServices {
 
   // private oznacava da je moguce pristup samo unutar ove klase
   //
-  private saveAuthData(token: string, expirationDate: Date, userID: string) {
+  private saveAuthData(
+    token: string,
+    expirationDate: Date,
+    userID: string,
+    email: string
+  ) {
     localStorage.setItem("tokenPostaAngular", token);
+    localStorage.setItem("emailPostaAngular", email);
     localStorage.setItem(
       "expirationPostaAmgular",
       expirationDate.toISOString()
@@ -118,6 +136,7 @@ export class AuthServices {
     localStorage.removeItem("tokenPostaAngular");
     localStorage.removeItem("expirationPostaAmgular");
     localStorage.removeItem("userIdPostaAngular");
+    localStorage.removeItem("emailPostaAngular");
   }
 
   //
@@ -137,6 +156,7 @@ export class AuthServices {
       this.isLogin = true;
       this.setAuthTimer(expiresIn / 1000);
       this.userIdTrenutnoLogiran = authInformation.userId;
+      this.userEmail = authInformation.email;
       this.authStatusLisener.next(true);
     }
   }
@@ -155,6 +175,7 @@ export class AuthServices {
     const token = localStorage.getItem("tokenPostaAngular");
     const expirationDate = localStorage.getItem("expirationPostaAmgular");
     const userId = localStorage.getItem("userIdPostaAngular");
+    const email = localStorage.getItem("emailPostaAngular");
     if (!token || !expirationDate || !userId) {
       return;
     }
@@ -163,6 +184,7 @@ export class AuthServices {
       token: token,
       expirationDate: new Date(expirationDate),
       userId: userId,
+      email: email,
     };
   }
 }
