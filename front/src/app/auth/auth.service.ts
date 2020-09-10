@@ -3,11 +3,13 @@ import { HttpClient } from "@angular/common/http";
 import { Router } from "@angular/router";
 import { environment } from "../../environments/environment";
 import { AuthData } from "./auth-data";
+import { Subject } from "rxjs";
 
 //
 @Injectable({ providedIn: "root" })
 export class AuthServices {
   token: string;
+  private authStatusLisener = new Subject<boolean>();
 
   constructor(private http: HttpClient, private router: Router) {}
 
@@ -15,7 +17,10 @@ export class AuthServices {
     return this.token;
   }
 
-  
+  getAuthStatusLisener(){
+    return this.authStatusLisener.asObservable();
+  }
+
   // SIGN UP - kreiramo user-a
   createUser(email: string, password: string) {
     const authData: AuthData = {
@@ -40,6 +45,7 @@ export class AuthServices {
       .subscribe((res) => {
         const token = res.token;
         this.token = token;
+        this.authStatusLisener.next(true);
         console.log(res);
       });
   }

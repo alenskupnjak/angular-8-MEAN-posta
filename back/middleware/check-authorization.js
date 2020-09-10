@@ -13,13 +13,13 @@ module.exports = (req, res, next) => {
     const token = req.headers.authorization.split(" ")[1];
     console.log('***************************');
     
-    console.log(token);
     
     jwt.verify(token, process.env.JWT_SECRET_WORD);
+    console.log(token);
     next();
     // console.log(token);
   } catch (error) {
-    // console.log(error);
+    console.log('Nije Autoriziran');
     res.status(401).json({ message: "Auth failed!" });
   }
 };

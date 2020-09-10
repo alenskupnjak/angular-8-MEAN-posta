@@ -118,7 +118,7 @@ export class PostService {
   }
 
   // *****************************
-  // dohvacane jednog posta preko ID
+  // dohvacanje jednog posta preko ID
   getPost(id: string) {
     return this.posts.find((data) => {
       return data.id === id;

@@ -133,7 +133,7 @@ router.put(
 //
 // GET (ist kao i use get)
 // PATH: '/'
-router.get('', checkAuth, (req, res, next) => {
+router.get('', (req, res, next) => {
   const pageSize = parseInt(req.query.pagesize); // vrijednost je uvijek string
   const currentPage = parseInt(req.query.page);
   // Inicijaliziramo pocetno stanje query kojeg mozemo obradivatu u lancu zahtijeva
