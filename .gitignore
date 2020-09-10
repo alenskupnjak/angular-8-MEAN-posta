@@ -10,6 +10,7 @@
 # dependencies
 /node_modules
 back/node_modules
+back/images
 front/node_modules
 /environments
 front/src/environments/
