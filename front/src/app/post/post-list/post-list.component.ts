@@ -20,6 +20,7 @@ export class PostListComponent implements OnInit, OnDestroy {
   postPerPage = 5; // paginacija ,zapisa po stranici
   currentPage = 1; // trenutna stranica
   pageSizeOptions = [1, 2, 5, 10, 30]; // definira koliko cemo max. prikazivati na stranici
+  trenutnoLogiranKorisnikId: string;
 
   private postsSub: Subscription; // definiramo varijablu zbog memory leak-a...
   private authLisenerSubs: Subscription; // prati logiranje user
@@ -35,6 +36,9 @@ export class PostListComponent implements OnInit, OnDestroy {
   ngOnInit() {
     this.isLoading = true; // definiranje spinerra
 
+    // trenutni korisnik
+    this.trenutnoLogiranKorisnikId = this.authServices.trenutnoLogiranKorisnikId();
+
     // Povlačimo podatke iz baze
     this.postService.getPosts(this.postPerPage, this.currentPage);
 
@@ -48,6 +52,7 @@ export class PostListComponent implements OnInit, OnDestroy {
         this.totalPost = data.brojDokumenata;
         this.postaUlazna = data.posts;
         this.isLoading = false; // definiranje spinerra
+        this.trenutnoLogiranKorisnikId = this.authServices.trenutnoLogiranKorisnikId();
       });
 
     // provjeravamo da lj je korisnik logiran

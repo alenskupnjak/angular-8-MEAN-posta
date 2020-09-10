@@ -10,6 +10,7 @@ import { AuthData } from "./auth-data";
 export class AuthServices {
   private isLogin = false;
   private token: string;
+  private userIdTrenutnoLogiran: string;
   private tokenTimer: any;
   private authStatusLisener = new Subject<boolean>();
 
@@ -22,6 +23,11 @@ export class AuthServices {
   // definira status logiranja: TRUE ili FALSE
   getIsAuth() {
     return this.isLogin;
+  }
+
+  // definira status logiranja: TRUE ili FALSE
+  trenutnoLogiranKorisnikId() {
+    return this.userIdTrenutnoLogiran;
   }
 
   getAuthStatusLisener() {
@@ -48,10 +54,11 @@ export class AuthServices {
       password: password,
     };
     this.http
-      .post<{ token: string; expiresIn: number }>(
-        `${environment.path}/api/user/login`,
-        authData
-      )
+      .post<{
+        token: string;
+        expiresIn: number;
+        loginUser: string;
+      }>(`${environment.path}/api/user/login`, authData)
       .subscribe((res) => {
         const token = res.token;
         this.token = token;
@@ -62,20 +69,21 @@ export class AuthServices {
           // ovdje spremam informaciju za nerenderirane stranice nakon LOGINA
           this.isLogin = true;
 
+          // trenutno logiran korisnik
+          this.userIdTrenutnoLogiran = res.loginUser;
+
           // ovo se aktivira samo kod LOGIN i LOGOUT.
           // saljem podatke svim componentama  koje su AKTIVNE!! da je neko logiran
           this.authStatusLisener.next(true);
 
           // snimamo token i expiredtime u LOCALSTORAGE
           const now = new Date();
-          console.log("datum=", now, now.getTime());
-          console.log("datum xx=", now.getTime());
           const expirationDate = new Date(
             now.getTime() + expiresInDuration * 1000
           );
 
           // snimanje podataka u localStorage
-          this.saveAuthData(token, expirationDate);
+          this.saveAuthData(token, expirationDate, this.userIdTrenutnoLogiran);
           this.router.navigate(["/"]);
         }
       });
@@ -86,6 +94,7 @@ export class AuthServices {
   logout() {
     this.token = null;
     this.isLogin = false;
+    this.userIdTrenutnoLogiran = null;
     // saljam signal u header da sam odlogiran
     this.authStatusLisener.next(false);
     this.router.navigate(["/"]);
@@ -96,17 +105,19 @@ export class AuthServices {
 
   // private oznacava da je moguce pristup samo unutar ove klase
   //
-  private saveAuthData(token: string, expirationDate: Date) {
+  private saveAuthData(token: string, expirationDate: Date, userID: string) {
     localStorage.setItem("tokenPostaAngular", token);
     localStorage.setItem(
       "expirationPostaAmgular",
       expirationDate.toISOString()
     );
+    localStorage.setItem("userIdPostaAngular", userID);
   }
 
   private clearAuthData() {
     localStorage.removeItem("tokenPostaAngular");
     localStorage.removeItem("expirationPostaAmgular");
+    localStorage.removeItem("userIdPostaAngular");
   }
 
   //
@@ -121,12 +132,11 @@ export class AuthServices {
     const expiresIn =
       authInformation.expirationDate.getTime() - new Date().getTime();
 
-    console.log(authInformation, expiresIn);
-
     if (expiresIn > 0) {
       this.token = authInformation.token;
       this.isLogin = true;
       this.setAuthTimer(expiresIn / 1000);
+      this.userIdTrenutnoLogiran = authInformation.userId;
       this.authStatusLisener.next(true);
     }
   }
@@ -144,13 +154,15 @@ export class AuthServices {
   private getAuthData() {
     const token = localStorage.getItem("tokenPostaAngular");
     const expirationDate = localStorage.getItem("expirationPostaAmgular");
-    if (!token || !expirationDate) {
+    const userId = localStorage.getItem("userIdPostaAngular");
+    if (!token || !expirationDate || !userId) {
       return;
     }
     // ako zapisi postoje vracam zapis
     return {
       token: token,
       expirationDate: new Date(expirationDate),
+      userId: userId,
     };
   }
 }

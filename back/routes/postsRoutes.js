@@ -121,6 +121,7 @@ router.put(
       content: req.body.content,
       imagePath: imagePath,
       imagePathRelative: imagePathRelative,
+      creator: req.userData.userId
     });
 
     Post.findOne({ _id: req.params.id, creator: req.userData.userId })

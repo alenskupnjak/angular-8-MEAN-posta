@@ -45,9 +45,9 @@ router.post('/login', (req, res, next) => {
           message: 'Autorizacija nije uspjela',
         });
       }
-      
-      console.log('user==',user);
-      
+
+      console.log('user==', user);
+
       // treba nam ovaj podatak da mozemo poslat u jwt.sign userId
       userLogin = user;
       // usporedujemo upisani password sa hasa-passwordom u bazi
@@ -69,11 +69,11 @@ router.post('/login', (req, res, next) => {
         process.env.JWT_SECRET_WORD,
         { expiresIn: process.env.JWT_EXPIRE }
       );
-      console.log(token);
 
       res.status(200).json({
         token: token,
         expiresIn: 3600,
+        loginUser: userLogin._id
       });
     })
     .catch((err) => {

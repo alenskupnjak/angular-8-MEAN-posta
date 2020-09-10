@@ -12,7 +12,7 @@
       {{ data.content}}
     </mat-panel-description>
 
-    <mat-action-row *ngIf="isLogin">
+    <mat-action-row *ngIf="isLogin && trenutnoLogiranKorisnikId === data.creator">
       <a mat-button color="primary" [routerLink]="['/edit', data.id]">EDIT</a>
       <button mat-button color="warn" (click)="onDelete(data.id)" >DELETE</button>
     </mat-action-row>

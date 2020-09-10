@@ -103,6 +103,7 @@ export class PostService {
           title: title,
           content: content,
           imagePath: data.podatak.imagePath,
+          creator: null,
         };
         console.log(data);
 
@@ -141,6 +142,7 @@ export class PostService {
         title: title,
         content: content,
         imagePath: image,
+        creator: null,
       };
     }
     this.http
@@ -156,11 +158,6 @@ export class PostService {
   //
   // brisanje zapisa iz baze
   postDelete(id: string) {
-    console.log("  postDelete ID =", id);
-
-    console.log(`http://localhost:4401/api/posts/${id}`);
-    console.log("http://localhost:4401/api/posts/" + id);
-
     this.http
       .delete(`${environment.path}/api/posts/` + id)
       .subscribe((data) => {
