@@ -73,7 +73,6 @@ export class PostReactiveComponent implements OnInit {
     this.isLoading = true; // definiranje spinerra
     // ako forma nije dobro popunjena vraćamo
     if (this.form.invalid) {
-      console.log('lolol');
       return;
     }
 
@@ -118,8 +117,5 @@ export class PostReactiveComponent implements OnInit {
 
     // read the binary data and encode it as base64 data url.
     reader.readAsDataURL(file);
-
-    console.log(file);
-    console.log(this.form);
   }
 }

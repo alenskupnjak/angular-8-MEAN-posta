@@ -127,6 +127,9 @@ export class PostService {
   // UPDATE post
   updatePost(id: string, title: string, content: string, image: any) {
     let postData: Post | FormData;
+
+    console.log('****************', image);
+
     // console.log(typeof image === "object");
 
     if (typeof image === "object") {
@@ -146,7 +149,7 @@ export class PostService {
     this.http
       .put(`http://localhost:4401/api/posts/` + id, postData)
       .subscribe((res) => {
-        console.log("Update", res);
+        console.log("Updated", res);
         // vracamo na listu svih postova
         this.router.navigate(["/"]);
       });

@@ -93,47 +93,59 @@ router.post(
 );
 
 //
-// PUT
+// UPDATE
 //
 router.put(
   '/:id',
   checkAuth,
   multer({ storage: storage }).single('image'),
   (req, res, next) => {
-    console.log(req.body);
-    console.log('req.file', req.file);
-    const url = req.protocol + '://' + req.get('host');
+    let imagePath = req.body.imagePath;
+    let imagePathRelative
+
+    if (imagePath) {
+      const regex = /images/g;
+      const indexImage = imagePath.search(regex);
+      imagePathRelative  = imagePath.slice(indexImage);
+    }
+    if (req.file) {
+      const url = req.protocol + '://' + req.get('host');
+      imagePath = url + '/images/' + req.file.filename;
+      imagePathRelative = 'images/' + req.file.filename;
+    }
+
     // kreiramo novi post kojim cemo pregaziti postojeci
     const post = new Post({
       _id: req.body.id,
       title: req.body.title,
       content: req.body.content,
-      imagePath: url + '/images/' + req.file.filename,
-      imagePathRelative: 'images/' + req.file.filename,
+      imagePath: imagePath,
+      imagePathRelative: imagePathRelative,
     });
 
-    // radimo update posta...
-    Post.updateOne({ _id: req.params.id }, post).then((data) => {
-      console.log(data);
-      // obrisi file
-      console.log('tototot');
-
-      // fs.unlink(
-      //   'images/' + req.file.filename,
-      //   (err) => {
-      //     try {
-      //       console.log('Obrisao file cc');
-      //     } catch (error) {
-      //       console.log(error);
-      //     }
-      //   }
-      // );
-
-      res.status(201).json({
-        message: 'Update uspio',
-        data: post,
+    Post.findOne({ _id: req.params.id })
+      .then((res) => {
+        // brišem file samo ako je je selektiran novi file
+        if (req.file) {
+          fs.unlink(res.imagePathRelative, (err) => {
+            try {
+              console.log('Obrisao file Prilikom Update');
+            } catch (error) {
+              console.log(error);
+            }
+          });
+        }
+        return res;
+      })
+      .then((data) => {
+        // radimo update posta...
+        Post.updateOne({ _id: req.params.id }, post).then((data) => {
+          res.status(201).json({
+            message: 'Update uspio',
+            data: post,
+          });
+        });
       });
-    });
   }
 );
 

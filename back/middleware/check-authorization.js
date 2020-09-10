@@ -1,9 +1,10 @@
 const jwt = require('jsonwebtoken');
+const colors = require('colors');
 
 module.exports = (req, res, next) => {
   try {
     const token = req.headers.authorization.split(' ')[1];
-    console.log('Korisnik je Atoriziran');
+    console.log('Korisnik je Autoriziran');
 
     // ako baci grešku ide u catch....
     const decodedToken = jwt.verify(token, process.env.JWT_SECRET_WORD);
@@ -11,7 +12,6 @@ module.exports = (req, res, next) => {
       email: decodedToken.email,
       userId: decodedToken.userId,
     };
-    console.log(decodedToken);
     next();
     // console.log(token);
   } catch (error) {
