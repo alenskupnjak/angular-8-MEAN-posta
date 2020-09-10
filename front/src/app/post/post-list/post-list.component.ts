@@ -5,6 +5,7 @@ import { Subscription } from "rxjs";
 // kreirane komponente
 import { Post } from "../post.model";
 import { PostService } from "../post.service";
+import { AuthServices } from "src/app/auth/auth.service";
 
 @Component({
   selector: "app-post-list",
@@ -12,22 +13,25 @@ import { PostService } from "../post.service";
   styleUrls: ["./post-list.component.css"],
 })
 export class PostListComponent implements OnInit, OnDestroy {
-
-  postaUlazna: Post[] = [];  // property ... Prima podatke ....
+  postaUlazna: Post[] = []; // property ... Prima podatke ....
   isLoading = false; // definiranje spinerra
 
   totalPost = 0; // paginacija ,ukupna duljina liste
-  postPerPage = 5;  // paginacija ,zapisa po stranici
+  postPerPage = 5; // paginacija ,zapisa po stranici
   currentPage = 1; // trenutna stranica
   pageSizeOptions = [1, 2, 5, 10, 30]; // definira koliko cemo max. prikazivati na stranici
 
   private postsSub: Subscription; // definiramo varijablu zbog memory leak-a...
+  private authLisenerSubs: Subscription; // prati logiranje user
+  isLogin = false; // u startu nema logiranog usera
 
-  // ISTO je pisati i:  constructor(public postService: PostService)
-  postService: PostService;
-  constructor(postService: PostService) {
-    this.postService = postService;
-  }
+  constructor(
+    private postService: PostService,
+    private authServices: AuthServices
+  ) {}
+
+  //
+  // Inicijalizacija
   ngOnInit() {
     this.isLoading = true; // definiranje spinerra
 
@@ -39,15 +43,26 @@ export class PostListComponent implements OnInit, OnDestroy {
       .getPostUpdateListener() // ovo predstavlja okidač za promjenu na ekranu
       .subscribe((data: { posts: Post[]; brojDokumenata: number }) => {
         console.log("data subscribe", data);
-
         // promjena vrijednosti postaUlazna koja je u HTML templatu
         // angular automatski renderira stranicu ponovo
         this.totalPost = data.brojDokumenata;
         this.postaUlazna = data.posts;
         this.isLoading = false; // definiranje spinerra
       });
+
+    // provjeravamo da lj je korisnik logiran
+    this.isLogin = this.authServices.getIsAuth();
+
+    // OBSERVER - reagira samo na LOGIN i LOGOUT !!!
+    this.authLisenerSubs = this.authServices
+      .getAuthStatusLisener()
+      .subscribe((res) => {
+        console.log("Post-list, podatak promjenio u Authservisu... ", res);
+        this.isLogin = res;
+      });
   }
 
+  //
   // svaka promjena na paginatoru se reflektira
   onChangePage(pageData: PageEvent) {
     console.log("pageData==", pageData);
@@ -63,8 +78,10 @@ export class PostListComponent implements OnInit, OnDestroy {
     this.postService.postDelete(id);
   }
 
+  //
   // cuvamo od memory leak-a
   ngOnDestroy() {
     this.postsSub.unsubscribe();
+    this.authLisenerSubs.unsubscribe();
   }
 }

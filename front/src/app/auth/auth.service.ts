@@ -8,6 +8,7 @@ import { Subject } from "rxjs";
 //
 @Injectable({ providedIn: "root" })
 export class AuthServices {
+  private isLogin = false;
   token: string;
   private authStatusLisener = new Subject<boolean>();
 
@@ -17,7 +18,12 @@ export class AuthServices {
     return this.token;
   }
 
-  getAuthStatusLisener(){
+  // definira status logiranja: TRUE ili FALSE
+  getIsAuth() {
+    return this.isLogin;
+  }
+
+  getAuthStatusLisener() {
     return this.authStatusLisener.asObservable();
   }
 
@@ -45,8 +51,23 @@ export class AuthServices {
       .subscribe((res) => {
         const token = res.token;
         this.token = token;
-        this.authStatusLisener.next(true);
-        console.log(res);
+        if (token) {
+          // ovdje spremam informaciju za nerenderirane stranice nakon LOGINA
+          this.isLogin = true;
+
+          // ovo se aktivira samo kod LOGIN i LOGOUT.
+          // saljem podatke svim componentama  koje su AKTIVNE!! da je neko logiran
+          this.authStatusLisener.next(true);
+        }
       });
+  }
+
+  //
+  // Logout
+  logout(){
+    this.token = null;
+    this.isLogin = false;
+    // saljam signal u header da sam odlogiran
+    this.authStatusLisener.next(false);
   }
 }

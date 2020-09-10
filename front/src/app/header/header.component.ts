@@ -12,7 +12,7 @@ export class HeaderComponent implements OnInit, OnDestroy {
   // definiramo varijablu zbog memory leak-a...
   private postsSub: Subscription;
   private authLisenerSubs: Subscription;
-  isLogin = false;  // u startu nema logiranog usera
+  isLogin = false; // u startu nema logiranog usera
 
   constructor(
     public postService: PostService,
@@ -33,14 +33,19 @@ export class HeaderComponent implements OnInit, OnDestroy {
     this.authLisenerSubs = this.authServices
       .getAuthStatusLisener()
       .subscribe((res) => {
-        console.log(
-          "Ja Header, sam cuo sam da se je podatak promjenio u Authservisu... ",
-          res
-        );
+        console.log("Header, cuo sam promjenu podataka u Authservisu... ", res);
         this.isLogin = res;
       });
   }
 
+  //
+  // Izlazak iz aplikacije, odlogitan, brise se token
+  onLogout() {
+    this.authServices.logout();
+  }
+
+  //
+  // Brisanje svih subscribe()
   ngOnDestroy() {
     this.postsSub.unsubscribe();
     this.authLisenerSubs.unsubscribe();
