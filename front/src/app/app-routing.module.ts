@@ -27,4 +27,5 @@ const routes: Routes = [
   exports: [RouterModule], // omogučavamo korištenje u cijelom programu
   providers: [AuthGuard], // obavezno ovdije dodajemo zaszizi
 })
+
 export class AppRoutingModule {}

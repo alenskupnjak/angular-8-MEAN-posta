@@ -63,7 +63,7 @@ app.use((req, res, next) => {
     'Access-Control-Allow-Headers',
     'Origin, X-Requested-With, Content-Type, Accept, Authorization'
   );
-  res.header("Access-Control-Allow-Credentials", true);
+  res.header('Access-Control-Allow-Credentials', true);
   next();
 });
 
@@ -90,8 +90,6 @@ app.use((req, res, next) => {
   );
   next();
 });
-
-
 
 // // definiramo template engine koji cemo koristiti u aplikaciji (EJS ili PUG ili express-handlebars)
 // // app.set('view engine', 'pug'); // za pug
@@ -140,8 +138,11 @@ app.use(cors());
 // Mount routers
 app.use('/api/posts', postsRoutes);
 app.use('/api/user', userRouter);
-
-
+app.use('/', (req, res, next) => {
+  res.json({
+    message: ' Evo me...',
+  });
+});
 
 // definiranje porta
 const PORT = process.env.PORT || 4401;
