@@ -9,8 +9,8 @@ const User = require('../models/userModel');
 
 
 //*****************************
-// POST /api/user/signup
 // SIGN UP  CREATE
+// POST /api/user/signup
 exports.createUser = (req, res, next) => {
   bcrypt.hash(req.body.password, 10).then((hashPassword) => {
     const user = new User({
@@ -35,7 +35,7 @@ exports.createUser = (req, res, next) => {
 };
 
 // LOGIN LOGIN LOGIN LOGIN LOGIN LOGIN LOGIN
-// POST /api/user/login
+// POST  /api/user/login
 exports.loginUser = (req, res, next) => {
   let userLogin;
   User.findOne({ email: req.body.email })

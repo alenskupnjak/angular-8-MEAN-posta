@@ -6,7 +6,8 @@ import { map } from "rxjs/operators";
 import { Router } from "@angular/router";
 import { environment } from "../../environments/environment";
 
-@Injectable({ providedIn: "root" }) // ovo mora biti za provider !!!!
+
+@Injectable() // ovo mora biti za provider !!!!
 export class PostService {
   // osnovno polje iz kojeg vučemo podatke koji ce se prikazivati na ekranu
   private posts: Post[] = [];
