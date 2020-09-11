@@ -19,6 +19,7 @@ front/src/environments/
 chrome-profiler-events*.json
 speed-measure-plugin*.json
 .vscode
+.vscode/*
 
 # IDEs and editors
 /.idea
