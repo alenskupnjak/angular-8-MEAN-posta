@@ -17,8 +17,8 @@ export class PostListComponent implements OnInit, OnDestroy {
   isLoading = false; // definiranje spinerra
 
   totalPost = 0; // paginacija ,ukupna duljina liste
-  postPerPage = 5; // paginacija ,zapisa po stranici
-  currentPage = 1; // trenutna stranica
+  postPerPage = 10; // paginacija ,zapisa po stranici
+  currentPage = 1; // paginacija, trenutna stranica
   pageSizeOptions = [1, 2, 5, 10, 30]; // definira koliko cemo max. prikazivati na stranici
   trenutnoLogiranKorisnikId: string;
 
@@ -46,7 +46,6 @@ export class PostListComponent implements OnInit, OnDestroy {
     this.postsSub = this.postService
       .getPostUpdateListener() // ovo predstavlja okidač za promjenu na ekranu
       .subscribe((data: { posts: Post[]; brojDokumenata: number }) => {
-        console.log("data subscribe", data);
         // promjena vrijednosti postaUlazna koja je u HTML templatu
         // angular automatski renderira stranicu ponovo
         this.totalPost = data.brojDokumenata;

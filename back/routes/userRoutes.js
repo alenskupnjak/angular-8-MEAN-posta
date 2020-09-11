@@ -27,7 +27,7 @@ router.post('/signup', (req, res, next) => {
       })
       .catch((err) => {
         res.status(500).json({
-          error: err,
+          message: 'Neuspješno kreiranje korisnika',
         });
       });
   });
@@ -40,11 +40,9 @@ router.post('/login', (req, res, next) => {
   let userLogin;
   User.findOne({ email: req.body.email })
     .then((user) => {
+      // ovaj return prosljeduije u sljedeci then!!!
       if (!user) {
-        return res.status(401).json({
-          pozicija: 'router.post',
-          message: 'Autorizacija nije uspjela xx',
-        });
+        return;
       }
       // treba nam ovaj podatak da mozemo poslat u jwt.sign userId
       userLogin = user;
@@ -57,7 +55,7 @@ router.post('/login', (req, res, next) => {
       if (!result) {
         return res.status(401).json({
           pozicija: 'router.post',
-          message: 'Autorizacija nije uspjela yyyy',
+          message: 'Logiranje nije uspjelo, pokusajte ponovo.',
         });
       }
       console.log('process.env', process.env.JWT_SECRET_WORD, userLogin);

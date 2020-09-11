@@ -19,6 +19,9 @@ export class ErrorInterceptor implements HttpInterceptor {
     return next.handle(req).pipe(
       catchError((error: HttpErrorResponse) => {
         let errormessage = "Dogodila se greška...";
+        if (error.error.message) {
+          errormessage = error.error.message;
+        }
         this.dialog.open(ErrorComponent, { data: { poruka: errormessage } });
         console.log("intercept error", error);
         return throwError(error);

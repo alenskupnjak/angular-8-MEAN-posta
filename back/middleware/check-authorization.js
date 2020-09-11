@@ -15,7 +15,6 @@ module.exports = (req, res, next) => {
     next();
     // console.log(token);
   } catch (error) {
-    console.log('Nije Autoriziran');
-    res.status(401).json({ message: 'Auth failed!' });
+    res.status(401).json({ message: 'You are not authenticated' });
   }
 };

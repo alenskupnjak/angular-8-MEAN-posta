@@ -7,16 +7,14 @@ const colors = require('colors');
 const checkAuth = require('../middleware/check-authorization');
 const Post = require('../models/postModel');
 
-// ta rad u MULTER
+//
+// MULER MULTER
+// za spremanje fileova
 const MIME_TYPE_MAP = {
   'image/png': 'png',
   'image/jpeg': 'jpg',
   'image/jpg': 'jpg',
 };
-
-//
-// MULER MULTER
-// za spremanje fileova
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
     // podesavamo da vidimo dali je file ispravne extenzije
@@ -35,20 +33,6 @@ const storage = multer.diskStorage({
     cb(null, name + '-' + Date.now() + '.' + ext);
   },
 });
-
-// // MULER MULTER MULER MULTER
-// // filtriramo extenzije slika koje mozemo koristiti u programu
-// const fileFilter = (req, file, cb) => {
-//   if (
-//     file.mimetype === 'image/png' ||
-//     file.mimetype === 'image/jpg' ||
-//     file.mimetype === 'image/jpeg'
-//   ) {
-//     cb(null, true);
-//   } else {
-//     cb(null, false);
-//   }
-// };
 
 //
 // POST, dodavanje zappisa u BAZU
@@ -86,8 +70,9 @@ router.post(
         });
       })
       .catch((err) => {
-        console.log('Graška kod snimanja podataka');
-        console.log(err);
+        res.status(500).json({
+          message: 'Greška kod snimanja podataka u bazu.',
+        });
       });
   }
 );
@@ -121,25 +106,26 @@ router.put(
       content: req.body.content,
       imagePath: imagePath,
       imagePathRelative: imagePathRelative,
-      creator: req.userData.userId
+      creator: req.userData.userId,
     });
 
     Post.findOne({ _id: req.params.id, creator: req.userData.userId })
       .then((data) => {
-        console.log(data, !data);
-
         if (!data) {
           res.status(401).json({
             message: 'Ovaj korisnik autor ove poste, UPDATE',
           });
         }
+
         // brišem stari file samo ako je je selektiran novi file
         if (req.file) {
-          fs.unlink(res.imagePathRelative, (err) => {
+          fs.unlink(data.imagePathRelative, (err) => {
             try {
               console.log('Obrisao file Prilikom Update');
             } catch (error) {
-              console.log(error);
+              res.status(401).json({
+                message: 'Greška kod brisanja filea',
+              });
             }
           });
         }
@@ -161,8 +147,9 @@ router.put(
         });
       })
       .catch((err) => {
-        console.log('Neuspio update');
-        console.log(err);
+        res.status(500).json({
+          message: 'Neuspio update',
+        });
       });
   }
 );
