@@ -13,6 +13,7 @@ export class AuthServices {
   private userIdTrenutnoLogiran: string;
   private userEmail: string;
   private tokenTimer: any;
+  // registrira radnju LOGIN i LOGOUT
   private authStatusLisener = new Subject<boolean>();
 
   constructor(private http: HttpClient, private router: Router) {}
@@ -39,19 +40,26 @@ export class AuthServices {
     return this.authStatusLisener.asObservable();
   }
 
+  // *****************************
   // SIGN UP - kreiramo user-a
   createUser(email: string, password: string) {
     const authData: AuthData = {
       email: email,
       password: password,
     };
-    this.http
-      .post(`${environment.path}/api/user/signup`, authData)
-      .subscribe((res) => {
-        console.log(res);
-      });
+    this.http.post(`${environment.path}/api/user/signup`, authData).subscribe(
+      (res) => {
+        console.log("Kreiranje usera JE uspjelo");
+        this.router.navigate(["/login"]);
+      },
+      (err) => {
+        this.authStatusLisener.next(false);
+        console.log("Kreiranje usera nije uspjelo");
+      }
+    );
   }
 
+  // **************************************
   // SIGN UP - kreiramo user-a
   loginUser(email: string, password: string) {
     const authData: AuthData = {
@@ -65,43 +73,49 @@ export class AuthServices {
         loginUser: string;
         loginUserName: string;
       }>(`${environment.path}/api/user/login`, authData)
-      .subscribe((res) => {
-        const token = res.token;
-        this.token = token;
-        if (token) {
-          // vrijednost u sekunadama
-          const expiresInDuration = res.expiresIn;
-          this.setAuthTimer(expiresInDuration);
-          // ovdje spremam informaciju za nerenderirane stranice nakon LOGINA
-          this.isLogin = true;
+      .subscribe(
+        (res) => {
+          const token = res.token;
+          this.token = token;
+          if (token) {
+            // vrijednost u sekunadama
+            const expiresInDuration = res.expiresIn;
+            this.setAuthTimer(expiresInDuration);
+            // ovdje spremam informaciju za nerenderirane stranice nakon LOGINA
+            this.isLogin = true;
 
-          // trenutno logiran korisnik
-          this.userIdTrenutnoLogiran = res.loginUser;
-          this.userEmail = res.loginUserName;
+            // trenutno logiran korisnik
+            this.userIdTrenutnoLogiran = res.loginUser;
+            this.userEmail = res.loginUserName;
 
-          // ovo se aktivira samo kod LOGIN i LOGOUT.
-          // saljem podatke svim componentama  koje su AKTIVNE!! da je neko logiran
-          this.authStatusLisener.next(true);
+            // ovo se aktivira samo kod LOGIN i LOGOUT.
+            // saljem podatke svim componentama  koje su AKTIVNE!! da je neko logiran
+            this.authStatusLisener.next(true);
 
-          // snimamo token i expiredtime u LOCALSTORAGE
-          const now = new Date();
-          const expirationDate = new Date(
-            now.getTime() + expiresInDuration * 1000
-          );
+            // snimamo token i expiredtime u LOCALSTORAGE
+            const now = new Date();
+            const expirationDate = new Date(
+              now.getTime() + expiresInDuration * 1000
+            );
 
-          // snimanje podataka u localStorage
-          this.saveAuthData(
-            token,
-            expirationDate,
-            this.userIdTrenutnoLogiran,
-            this.userEmail
-          );
-          this.router.navigate(["/"]);
+            // snimanje podataka u localStorage
+            this.saveAuthData(
+              token,
+              expirationDate,
+              this.userIdTrenutnoLogiran,
+              this.userEmail
+            );
+            this.router.navigate(["/"]);
+          }
+        },
+        (err) => {
+          console.log("Neuspjela autorizacija");
+          this.authStatusLisener.next(false);
         }
-      });
+      );
   }
 
-  //
+  // *****************************
   // Logout
   logout() {
     this.token = null;
@@ -112,11 +126,11 @@ export class AuthServices {
     this.router.navigate(["/"]);
     // brisem timer koji sam postavio da nakon expiresInDuration se odlogira
     clearTimeout(this.tokenTimer);
-    this.clearAuthData();
+    this.clearAuthData(); // brisanje localstorage
   }
 
-  // private oznacava da je moguce pristup samo unutar ove klase
-  //
+  // *************************************************
+  // snimanjepodataka u local storage
   private saveAuthData(
     token: string,
     expirationDate: Date,

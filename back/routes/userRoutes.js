@@ -42,12 +42,10 @@ router.post('/login', (req, res, next) => {
     .then((user) => {
       if (!user) {
         return res.status(401).json({
-          message: 'Autorizacija nije uspjela',
+          pozicija: 'router.post',
+          message: 'Autorizacija nije uspjela xx',
         });
       }
-
-      console.log('user==', user);
-
       // treba nam ovaj podatak da mozemo poslat u jwt.sign userId
       userLogin = user;
       // usporedujemo upisani password sa hasa-passwordom u bazi
@@ -58,7 +56,8 @@ router.post('/login', (req, res, next) => {
       // TRUE il FALSE
       if (!result) {
         return res.status(401).json({
-          message: 'Autorizacija nije uspjela',
+          pozicija: 'router.post',
+          message: 'Autorizacija nije uspjela yyyy',
         });
       }
       console.log('process.env', process.env.JWT_SECRET_WORD, userLogin);
@@ -69,8 +68,8 @@ router.post('/login', (req, res, next) => {
         process.env.JWT_SECRET_WORD,
         { expiresIn: process.env.JWT_EXPIRE }
       );
-        console.log('userLogin'.bgRed,userLogin);
-        
+      console.log('userLogin'.bgRed, userLogin);
+
       res.status(200).json({
         token: token,
         expiresIn: 3600,
@@ -79,7 +78,10 @@ router.post('/login', (req, res, next) => {
       });
     })
     .catch((err) => {
-      console.log(err);
+      res.status(500).json({
+        Usjeh: 'NE',
+        message: 'Autorizacija nije uspjela yyyy',
+      });
     });
 });
 

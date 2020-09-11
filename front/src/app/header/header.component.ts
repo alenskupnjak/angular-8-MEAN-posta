@@ -23,21 +23,31 @@ export class HeaderComponent implements OnInit, OnDestroy {
   ngOnInit() {
     this.isLogin = this.authServices.getIsAuth();
     // ovo je za vjezbu ZAPAMTI OVO!!!!!!!
-    this.postsSub = this.postService
-      .getPostUpdateListener()
-      .subscribe((data) => {
+    this.postsSub = this.postService.getPostUpdateListener().subscribe(
+      (data) => {
         console.log("Ja Header, sam cuo promjenu podataka u servisu!", data);
-      });
+      },
+      (err) => {
+        console.log("********");
+        this.isLogin = false;
+        console.log(err);
+      }
+    );
 
-    this.authLisenerSubs = this.authServices
-      .getAuthStatusLisener()
-      .subscribe((res) => {
+    this.authLisenerSubs = this.authServices.getAuthStatusLisener().subscribe(
+      (res) => {
         console.log("Header, cuo sam o promjeni podataka u Authservisu!", res);
         this.isLogin = res;
-        this.trenutniKorisnik= this.authServices.trenutniKorisnik();
-      });
+        this.trenutniKorisnik = this.authServices.trenutniKorisnik();
+      },
+      (err) => {
+        console.log("--------");
 
-      this.trenutniKorisnik= this.authServices.trenutniKorisnik();
+        console.log(err);
+      }
+    );
+
+    this.trenutniKorisnik = this.authServices.trenutniKorisnik();
   }
 
   //

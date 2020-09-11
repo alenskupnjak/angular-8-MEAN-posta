@@ -58,8 +58,6 @@ export class PostService {
         })
       )
       .subscribe((dataPost) => {
-        console.log(dataPost);
-
         this.posts = dataPost.posts;
         // saljemo signap u program...
         this.postUpdated.next({
