@@ -1,0 +1,15 @@
+# See http://help.github.com/ignore-files/ for more about ignoring files.
+
+# IDE - VSCode
+.vscode
+
+# compiled output
+/dist
+
+images/
+# dependencies
+node_modules/
+
+
+
+

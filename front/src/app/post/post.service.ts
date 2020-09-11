@@ -1,4 +1,3 @@
-import { Post } from "./post.model";
 import { Subject } from "rxjs";
 import { HttpClient } from "@angular/common/http";
 import { Injectable } from "@angular/core";
@@ -6,6 +5,7 @@ import { map } from "rxjs/operators";
 import { Router } from "@angular/router";
 import { environment } from "../../environments/environment";
 
+import { Post } from "./post.model";
 
 @Injectable() // ovo mora biti za provider !!!!
 export class PostService {
@@ -90,7 +90,7 @@ export class PostService {
 
     this.http
       .post<{ message: string; podatak: Post }>(
-        "http://localhost:4401/api/posts",
+        `${environment.path}/api/posts`,
         postData
       )
       .subscribe((data) => {
@@ -145,7 +145,7 @@ export class PostService {
       };
     }
     this.http
-      .put(`http://localhost:4401/api/posts/` + id, postData)
+      .put(`${environment.path}/api/posts/` + id, postData)
       .subscribe((res) => {
         console.log("Updated", res);
         // vracamo na listu svih postova

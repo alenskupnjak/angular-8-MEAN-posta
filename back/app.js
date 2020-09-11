@@ -18,6 +18,7 @@ const cors = require('cors');
 // const errorHandlerSvi = require('./middleware/error');
 
 // START express (NODE), inicijalizacija aplikacije
+console.log(colors.bgRed('START START START'));
 const app = express();
 
 // definiramo path za file u koji spremamo potrebne varijable
@@ -78,10 +79,6 @@ app.use('/images', express.static(path.join(__dirname, 'images')));
 //  ROUTE routs path files
 const postsRoutes = require('./routes/postsRoutes');
 const userRouter = require('./routes/userRoutes');
-// const coursesRouter = require('./routes/coursesRouter');
-// const authRouter = require('./routes/authRouter');
-// const reviewsRouter = require('./routes/reviewsRouter');
-// const viewRouter = require('./routes/viewRouter');
 
 //
 // pokusni middeleware
@@ -91,13 +88,10 @@ app.use((req, res, next) => {
   console.log(
     `${req.method} ${req.protocol}://${req.get('host')}${req.originalUrl}`
   );
-  // console.log(req.get('connection'));
-  // console.log(req.get('cookie'));
-  // console.log(colors.yellow.inverse(req.body));
   next();
 });
 
-console.log(colors.bgRed('START START START'));
+
 
 // // definiramo template engine koji cemo koristiti u aplikaciji (EJS ili PUG ili express-handlebars)
 // // app.set('view engine', 'pug'); // za pug
@@ -146,13 +140,8 @@ app.use(cors());
 // Mount routers
 app.use('/api/posts', postsRoutes);
 app.use('/api/user', userRouter);
-// app.use('/api/v1/bootcamps', bootcampRouter);
-// app.use('/api/v1/courses', coursesRouter);
-// app.use('/api/v1/auth', authRouter);
-// app.use('/api/v1/reviews', reviewsRouter);
 
-// // MIDDLEWARE za greske
-// app.use(errorHandlerSvi);
+
 
 // definiranje porta
 const PORT = process.env.PORT || 4401;
