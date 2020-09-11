@@ -1,158 +1,122 @@
 const express = require('express');
 const router = express.Router();
-const multer = require('multer');
+
 const fs = require('fs');
 const colors = require('colors');
 
 const checkAuth = require('../middleware/check-authorization');
 const Post = require('../models/postModel');
-
-//
-// MULER MULTER
-// za spremanje fileova
-const MIME_TYPE_MAP = {
-  'image/png': 'png',
-  'image/jpeg': 'jpg',
-  'image/jpg': 'jpg',
-};
-const storage = multer.diskStorage({
-  destination: (req, file, cb) => {
-    // podesavamo da vidimo dali je file ispravne extenzije
-    const isValid = MIME_TYPE_MAP[file.mimetype];
-    let error = new Error('Invalid mime type');
-    // ako je pronasao jedno od navedenih 3 extenzija, SET error = null
-    if (isValid) {
-      error = null;
-    }
-    cb(null, 'images');
-  },
-  filename: (req, file, cb) => {
-    const name = file.originalname.toLowerCase().split(' ').join('-');
-    const ext = MIME_TYPE_MAP[file.mimetype];
-    console.log('ime=', name + '-' + '.' + ext);
-    cb(null, name + '-' + Date.now() + '.' + ext);
-  },
-});
+const extractFile = require('../middleware/file');
 
 //
 // POST, dodavanje zappisa u BAZU
 //
-router.post(
-  '',
-  checkAuth,
-  multer({ storage: storage }).single('image'),
-  (req, res, next) => {
-    const url = req.protocol + '://' + req.get('host');
-    console.log(req.userData);
+router.post('', checkAuth, extractFile, (req, res, next) => {
+  const url = req.protocol + '://' + req.get('host');
+  console.log(req.userData);
 
-    // kreiramo post
-    const post = new Post({
-      title: req.body.title,
-      content: req.body.content,
-      imagePath: url + '/images/' + req.file.filename,
-      imagePathRelative: 'images/' + req.file.filename,
-      creator: req.userData.userId,
-    });
+  // kreiramo post
+  const post = new Post({
+    title: req.body.title,
+    content: req.body.content,
+    imagePath: url + '/images/' + req.file.filename,
+    imagePathRelative: 'images/' + req.file.filename,
+    creator: req.userData.userId,
+  });
 
-    // snimimo podatak u BAZU
-    post
-      .save()
-      .then((createdPost) => {
-        res.status(201).json({
-          message: 'Uspjeh',
-          podatak: {
-            id: createdPost._id,
-            title: createdPost.title,
-            content: createdPost.content,
-            imagePath: createdPost.imagePath,
-            imagePathRelative: createdPost.imagePath,
-          },
-        });
-      })
-      .catch((err) => {
-        res.status(500).json({
-          message: 'Greška kod snimanja podataka u bazu.',
-        });
+  // snimimo podatak u BAZU
+  post
+    .save()
+    .then((createdPost) => {
+      res.status(201).json({
+        message: 'Uspjeh',
+        podatak: {
+          id: createdPost._id,
+          title: createdPost.title,
+          content: createdPost.content,
+          imagePath: createdPost.imagePath,
+          imagePathRelative: createdPost.imagePath,
+        },
       });
-  }
-);
+    })
+    .catch((err) => {
+      res.status(500).json({
+        message: 'Greška kod snimanja podataka u bazu.',
+      });
+    });
+});
 
 //
 // UPDATE
 //
-router.put(
-  '/:id',
-  checkAuth,
-  multer({ storage: storage }).single('image'),
-  (req, res, next) => {
-    let imagePath = req.body.imagePath;
-    let imagePathRelative;
+router.put('/:id', checkAuth, extractFile, (req, res, next) => {
+  let imagePath = req.body.imagePath;
+  let imagePathRelative;
 
-    if (imagePath) {
-      const regex = /images/g;
-      const indexImage = imagePath.search(regex);
-      imagePathRelative = imagePath.slice(indexImage);
-    }
-    if (req.file) {
-      const url = req.protocol + '://' + req.get('host');
-      imagePath = url + '/images/' + req.file.filename;
-      imagePathRelative = 'images/' + req.file.filename;
-    }
+  if (imagePath) {
+    const regex = /images/g;
+    const indexImage = imagePath.search(regex);
+    imagePathRelative = imagePath.slice(indexImage);
+  }
+  if (req.file) {
+    const url = req.protocol + '://' + req.get('host');
+    imagePath = url + '/images/' + req.file.filename;
+    imagePathRelative = 'images/' + req.file.filename;
+  }
 
-    // kreiramo novi post kojim cemo pregaziti postojeci
-    const post = new Post({
-      _id: req.body.id,
-      title: req.body.title,
-      content: req.body.content,
-      imagePath: imagePath,
-      imagePathRelative: imagePathRelative,
-      creator: req.userData.userId,
-    });
+  // kreiramo novi post kojim cemo pregaziti postojeci
+  const post = new Post({
+    _id: req.body.id,
+    title: req.body.title,
+    content: req.body.content,
+    imagePath: imagePath,
+    imagePathRelative: imagePathRelative,
+    creator: req.userData.userId,
+  });
 
-    Post.findOne({ _id: req.params.id, creator: req.userData.userId })
-      .then((data) => {
-        if (!data) {
-          res.status(401).json({
-            message: 'Ovaj korisnik autor ove poste, UPDATE',
-          });
-        }
-
-        // brišem stari file samo ako je je selektiran novi file
-        if (req.file) {
-          fs.unlink(data.imagePathRelative, (err) => {
-            try {
-              console.log('Obrisao file Prilikom Update');
-            } catch (error) {
-              res.status(401).json({
-                message: 'Greška kod brisanja filea',
-              });
-            }
-          });
-        }
-        return data;
-      })
-      .then((data) => {
-        if (!data) {
-          return res.status(401).json({
-            message: 'Ovaj korisnik nije autor ove poste, UPDATE',
-          });
-        }
-        // radimo update posta...
-        Post.updateOne({ _id: req.params.id }, post).then((data) => {
-          console.log('Update uspio'.green);
-          res.status(201).json({
-            message: 'Update uspio',
-            data: post,
-          });
+  Post.findOne({ _id: req.params.id, creator: req.userData.userId })
+    .then((data) => {
+      if (!data) {
+        res.status(401).json({
+          message: 'Ovaj korisnik autor ove poste, UPDATE',
         });
-      })
-      .catch((err) => {
-        res.status(500).json({
-          message: 'Neuspio update',
+      }
+
+      // brišem stari file samo ako je je selektiran novi file
+      if (req.file) {
+        fs.unlink(data.imagePathRelative, (err) => {
+          try {
+            console.log('Obrisao file Prilikom Update');
+          } catch (error) {
+            res.status(401).json({
+              message: 'Greška kod brisanja filea',
+            });
+          }
+        });
+      }
+      return data;
+    })
+    .then((data) => {
+      if (!data) {
+        return res.status(401).json({
+          message: 'Ovaj korisnik nije autor ove poste, UPDATE',
+        });
+      }
+      // radimo update posta...
+      Post.updateOne({ _id: req.params.id }, post).then((data) => {
+        console.log('Update uspio'.green);
+        res.status(201).json({
+          message: 'Update uspio',
+          data: post,
         });
       });
-  }
-);
+    })
+    .catch((err) => {
+      res.status(500).json({
+        message: 'Neuspio update',
+      });
+    });
+});
 
 //
 // GET (ist kao i use get)
@@ -179,7 +143,7 @@ router.get('', (req, res, next) => {
   postQuery
     .then((data) => {
       fetchedPosts = data;
-      return Post.count();
+      return Post.countDocuments();
     })
     .then((brojDokumenata) => {
       res.status(200).json({
