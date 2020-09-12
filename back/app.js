@@ -27,19 +27,18 @@ dotenv.config({ path: '.vscode/config.env' });
 // definiranje porta
 const PORT = process.env.PORT || 4401;
 
-console.log('PORT=',PORT);
-console.log('PORT=',PORTBAZA);
-console.log('proceas.env.JWT_SECRET_WORD=',JWT_SECRET_WORD);
-console.log('proceas.env.JWT_SECRET_WORD=',JWT_EXPIRE);
-console.log('proceas.env.JWT_SECRET_WORD=',JWT_SECRET_WORD);
-console.log('DATABASE=',DATABASE);
+console.log('PORT=',process.env.PORT);
+console.log('PORTBAZA=',process.env.PORTBAZA);
+console.log('proceas.env.JWT_SECRET_WORD=',process.env.JWT_SECRET_WORD);
+console.log('proceas.env.JWT_COOKIE_EXPIRE=',process.env.JWT_COOKIE_EXPIRE);
+console.log('proceas.env.JWT_EXPIRE=',process.env.JWT_EXPIRE);
+console.log('DATABASE=',process.env.DATABASE);
 
 
 
 mongoose
   .connect(
-    DATABASE, 
-    {
+    process.env.DATABASE, {
     useNewUrlParser: true,
     useCreateIndex: true,
     useFindAndModify: false,
@@ -47,14 +46,8 @@ mongoose
   })
   .then(() => {
     console.log(
-      `${process.env.OS}, Spojen na MongoDB, PORT= ${PORT}`.yellow
-        .bold
+      `Spojen na MongoDB, PORT= ${process.env.PORTBAZA}`
     );
-    if (process.env.NODE_ENV === 'production') {
-      console.log(`Radim u ${process.env.NODE_ENV} modu`.underline.blue);
-    } else {
-      console.log(`Radim u ${process.env.NODE_ENV}-modu`.underline.blue);
-    }
   })
   .catch((err) => {
     console.log('Ne mogu se spojiti 01'.red);
@@ -162,8 +155,8 @@ app.use('/', (req, res, next) => {
 
 
 // kreiramo server zahtijeve koji stizu
-const server = app.listen(PORTBAZA, () => {
-  console.log(`App listening on port ${PORT}`.blue);
+const server = app.listen(process.env.PORTBAZA , () => {
+  console.log(`App listening on port ${process.env.PORTBAZA }`.blue);
 });
 
 // // zatvar program
