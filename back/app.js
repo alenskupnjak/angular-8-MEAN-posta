@@ -24,8 +24,22 @@ const app = express();
 // definiramo path za file u koji spremamo potrebne varijable
 dotenv.config({ path: '.vscode/config.env' });
 
+// definiranje porta
+const PORT = process.env.PORT || 4401;
+
+console.log('PORT=',PORT);
+console.log('PORT=',PORTBAZA);
+console.log('proceas.env.JWT_SECRET_WORD=',JWT_SECRET_WORD);
+console.log('proceas.env.JWT_SECRET_WORD=',JWT_EXPIRE);
+console.log('proceas.env.JWT_SECRET_WORD=',JWT_SECRET_WORD);
+console.log('DATABASE=',DATABASE);
+
+
+
 mongoose
-  .connect(process.env.DATABASE, {
+  .connect(
+    DATABASE, 
+    {
     useNewUrlParser: true,
     useCreateIndex: true,
     useFindAndModify: false,
@@ -33,7 +47,7 @@ mongoose
   })
   .then(() => {
     console.log(
-      `${process.env.OS}, Spojen na MongoDB, PORT= ${process.env.PORT}`.yellow
+      `${process.env.OS}, Spojen na MongoDB, PORT= ${PORT}`.yellow
         .bold
     );
     if (process.env.NODE_ENV === 'production') {
@@ -43,10 +57,11 @@ mongoose
     }
   })
   .catch((err) => {
-    console.log('Ne mogu se spojiti'.red);
-    console.log(err.name);
+    console.log('Ne mogu se spojiti 01'.red);
+    console.log(err);
   });
 
+  
 // Body parser, bez ovoga ne mozemo slati podatke u req.body , starija verzija!!!!!
 // app.use(express.json());
 // // isto kao i app.use(express.json());  nova verzija
@@ -140,15 +155,14 @@ app.use('/api/posts', postsRoutes);
 app.use('/api/user', userRouter);
 app.use('/', (req, res, next) => {
   res.json({
-    message: ' Evo me...',
+    message: ' Evo me...radim',
   });
 });
 
-// definiranje porta
-const PORT = process.env.PORT || 4401;
+
 
 // kreiramo server zahtijeve koji stizu
-const server = app.listen(PORT, () => {
+const server = app.listen(PORTBAZA, () => {
   console.log(`App listening on port ${PORT}`.blue);
 });
 
@@ -160,3 +174,5 @@ const server = app.listen(PORT, () => {
 //     process.exit(1);
 //   });
 // });
+
+

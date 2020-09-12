@@ -2,7 +2,7 @@
   "name": "angular8",
   "version": "0.0.0",
   "scripts": {
-    "start": "ng serve --port 4400",
+    "start4400": "ng serve --port 4400",
     "build": "ng build",
     "test": "ng test",
     "lint": "ng lint",
@@ -45,5 +45,8 @@
     "ts-node": "~7.0.0",
     "tslint": "~5.15.0",
     "typescript": "~3.5.3"
+  },
+  "engines": {
+    "node": ">=10.0.0"
   }
 }

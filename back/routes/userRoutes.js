@@ -11,5 +11,4 @@ router.post('/signup', UserController.createUser); //
 router.post('/login', UserController.loginUser);  
 
 
-
 module.exports = router; // dolazi kod svakog routera!!!
