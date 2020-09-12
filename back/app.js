@@ -27,7 +27,7 @@ dotenv.config({ path: '.vscode/config.env' });
 // definiranje porta
 const PORT = process.env.PORT || 4401;
 
-console.log('PORT=',process.env.PORT);
+console.log('PORT=',PORT);
 console.log('PORTBAZA=',process.env.PORTBAZA);
 console.log('proceas.env.JWT_SECRET_WORD=',process.env.JWT_SECRET_WORD);
 console.log('proceas.env.JWT_COOKIE_EXPIRE=',process.env.JWT_COOKIE_EXPIRE);
