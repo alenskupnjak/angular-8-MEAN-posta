@@ -2,7 +2,7 @@
   "name": "angular8",
   "version": "0.0.0",
   "scripts": {
-    "start4400": "ng serve --port 4400",
+    "start4400": "ng serve --open --port 4400",
     "build": "ng build --prod --aot",
     "test": "ng test",
     "lint": "ng lint",

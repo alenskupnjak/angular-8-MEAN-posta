@@ -14,14 +14,12 @@
 
     <mat-action-row *ngIf="isLogin && trenutnoLogiranKorisnikId === data.creator">
       <a mat-button color="primary" [routerLink]="['/edit', data.id]">EDIT</a>
-      <button mat-button color="warn" (click)="onDelete(data.id)" >DELETE</button>
+      <button mat-button color="warn" (click)="onDelete(data.id)">DELETE</button>
     </mat-action-row>
   </mat-expansion-panel>
 </mat-accordion>
-<mat-paginator [length]="totalPost"
-              [pageSize]="postPerPage"
-              [pageSizeOptions]="pageSizeOptions"
-              (page)="onChangePage($event)">
+<mat-paginator [length]="totalPost" [pageSize]="postPerPage" [pageSizeOptions]="pageSizeOptions"
+  (page)="onChangePage($event)">
 </mat-paginator>
 
 <p class="info mat-body-1" *ngIf="postaUlazna.length <= 0">Jos nema podataka</p>
