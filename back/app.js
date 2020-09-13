@@ -34,7 +34,6 @@ console.log('DATABASE=',process.env.DATABASE);
 
 // definiranje porta
 const port = process.env.PORT || 4401;
-console.log('port=',port);
 
 mongoose
   .connect(

@@ -67,8 +67,7 @@ exports.loginUser = (req, res, next) => {
         process.env.JWT_SECRET_WORD,
         { expiresIn: process.env.JWT_EXPIRE }
       );
-      console.log('userLogin'.bgRed, userLogin);
-
+ 
       res.status(200).json({
         token: token,
         expiresIn: 3600,
