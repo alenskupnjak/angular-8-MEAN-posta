@@ -24,11 +24,9 @@ const app = express();
 // definiramo path za file u koji spremamo potrebne varijable
 dotenv.config({ path: '.vscode/config.env' });
 
-// definiranje porta
-const PORT = process.env.PORT || 4401;
 
-console.log('PORT=',PORT);
-console.log('PORTBAZA=',process.env.PORTBAZA);
+
+
 console.log('proceas.env.JWT_SECRET_WORD=',process.env.JWT_SECRET_WORD);
 console.log('proceas.env.JWT_COOKIE_EXPIRE=',process.env.JWT_COOKIE_EXPIRE);
 console.log('proceas.env.JWT_EXPIRE=',process.env.JWT_EXPIRE);
@@ -152,10 +150,12 @@ app.use('/', (req, res, next) => {
   });
 });
 
-
+// definiranje porta
+const port = process.env.PORT || 4401;
+console.log('port=',port);
 
 // kreiramo server zahtijeve koji stizu
-const server = app.listen(process.env.PORTBAZA , () => {
+const server = app.listen(port , () => {
   console.log(`App listening on port ${process.env.PORTBAZA }`.blue);
 });
 
