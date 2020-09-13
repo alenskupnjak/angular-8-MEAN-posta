@@ -148,7 +148,7 @@ app.use('/api/posts', postsRoutes);
 app.use('/api/user', userRouter);
 app.use('/', (req, res, next) => {
   res.json({
-    message: ' Evo me...radim 001',
+    message: ' Evo me na AZURE...radim :), pozdrav.',
   });
 });
 

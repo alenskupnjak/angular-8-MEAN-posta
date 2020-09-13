@@ -18,6 +18,7 @@ import { ErrorInterceptor } from "./error-interceptor";
 import { ErrorComponent } from "./error/error.component";
 import { MaterialModule } from './material-module';
 import { AuthModule } from './auth/auth.module';
+import { FooterComponent } from './footer/footer.component';
 
 @NgModule({
   declarations: [
@@ -26,6 +27,7 @@ import { AuthModule } from './auth/auth.module';
     HeaderComponent,
     PostListComponent,
     ErrorComponent,
+    FooterComponent,
   ],
   imports: [
     BrowserModule,
