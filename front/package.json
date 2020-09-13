@@ -3,7 +3,7 @@
   "version": "0.0.0",
   "scripts": {
     "start4400": "ng serve --port 4400",
-    "build": "ng build",
+    "build": "ng build --prod --aot",
     "test": "ng test",
     "lint": "ng lint",
     "e2e": "ng e2e"
@@ -47,6 +47,6 @@
     "typescript": "~3.5.3"
   },
   "engines": {
-    "node": ">=10.0.0"
+    "node": "12.16.1"
   }
 }

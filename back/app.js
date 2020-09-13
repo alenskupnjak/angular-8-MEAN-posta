@@ -32,7 +32,9 @@ console.log('proceas.env.JWT_COOKIE_EXPIRE=',process.env.JWT_COOKIE_EXPIRE);
 console.log('proceas.env.JWT_EXPIRE=',process.env.JWT_EXPIRE);
 console.log('DATABASE=',process.env.DATABASE);
 
-
+// definiranje porta
+const port = process.env.PORT || 4401;
+console.log('port=',port);
 
 mongoose
   .connect(
@@ -44,7 +46,7 @@ mongoose
   })
   .then(() => {
     console.log(
-      `Spojen na MongoDB, PORT= ${process.env.PORTBAZA}`
+      `Spojen na MongoDB, PORT= ${process.env.PORT}`
     );
   })
   .catch((err) => {
@@ -146,17 +148,15 @@ app.use('/api/posts', postsRoutes);
 app.use('/api/user', userRouter);
 app.use('/', (req, res, next) => {
   res.json({
-    message: ' Evo me...radim',
+    message: ' Evo me...radim 001',
   });
 });
 
-// definiranje porta
-const port = process.env.PORT || 4401;
-console.log('port=',port);
+
 
 // kreiramo server zahtijeve koji stizu
 const server = app.listen(port , () => {
-  console.log(`App listening on port ${process.env.PORTBAZA }`.blue);
+  console.log(`App listening on port ${process.env.PORT }`.blue);
 });
 
 // // zatvar program
