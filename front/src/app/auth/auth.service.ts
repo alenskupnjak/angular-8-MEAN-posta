@@ -8,7 +8,7 @@ import { AuthData } from "./auth-data";
 
 @Injectable({ providedIn: "root" })
 export class AuthServices {
-  private isLogin = false;
+  private isLogin = false; // korisnik logiran TRUE/FALSE
   private token: string;
   private userIdTrenutnoLogiran: string;
   private userEmail: string;

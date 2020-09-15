@@ -2,11 +2,11 @@
   "name": "angular8",
   "version": "0.0.0",
   "scripts": {
-    "start4400": "ng serve --open --port 4400",
+    "start4400": "ng serve --port 4400 --open",
     "build": "ng build --prod --aot",
     "test": "ng test",
     "lint": "ng lint",
-    "e2e": "ng e2e"
+    "compodoc": "npx compodoc -p tsconfig.json -s -o --theme material"
   },
   "private": true,
   "dependencies": {
@@ -20,6 +20,7 @@
     "@angular/platform-browser": "~8.2.14",
     "@angular/platform-browser-dynamic": "~8.2.14",
     "@angular/router": "~8.2.14",
+    "compodoc": "0.0.41",
     "rxjs": "^6.0.0",
     "tslib": "^1.10.0",
     "web-animations-js": "^2.3.2",

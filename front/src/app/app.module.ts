@@ -19,6 +19,7 @@ import { ErrorComponent } from "./error/error.component";
 import { MaterialModule } from './material-module';
 import { AuthModule } from './auth/auth.module';
 import { FooterComponent } from './footer/footer.component';
+import { NopagefoundComponent } from './nopagefound/nopagefound.component';
 
 @NgModule({
   declarations: [
@@ -28,6 +29,7 @@ import { FooterComponent } from './footer/footer.component';
     PostListComponent,
     ErrorComponent,
     FooterComponent,
+    NopagefoundComponent,
   ],
   imports: [
     BrowserModule,
