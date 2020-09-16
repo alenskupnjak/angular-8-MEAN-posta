@@ -128,6 +128,8 @@ export class AuthServices {
   // Logout
   logout() {
     this.token = null;
+    this.host = null;
+    
     this.isLogin = false;
     this.userIdTrenutnoLogiran = null;
     // saljam signal u header da sam odlogiran
@@ -202,6 +204,7 @@ export class AuthServices {
     const expirationDate = localStorage.getItem("expirationPostaAmgular");
     const userId = localStorage.getItem("userIdPostaAngular");
     const email = localStorage.getItem("emailPostaAngular");
+    const host = localStorage.getItem("hostPostaAngular");
     if (!token || !expirationDate || !userId) {
       return;
     }
@@ -211,6 +214,7 @@ export class AuthServices {
       expirationDate: new Date(expirationDate),
       userId: userId,
       email: email,
+      host:host
     };
   }
 }
