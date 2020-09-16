@@ -4,29 +4,31 @@ import { HttpClientModule, HTTP_INTERCEPTORS } from "@angular/common/http";
 import { BrowserAnimationsModule } from "@angular/platform-browser/animations";
 import { ReactiveFormsModule } from "@angular/forms"; // za Reactive driven forme
 
-
 // Ovdje dodajemo komponente
 import { AppComponent } from "./app.component";
-import { PostReactiveComponent } from "./post/post-reactive-driven-form/post-reactive.component";
+// import { PostReactiveComponent } from "./post/post-reactive-driven-form/post-reactive.component";
 import { HeaderComponent } from "./header/header.component";
-import { PostListComponent } from "./post/post-list/post-list.component";
+// import { PostListComponent } from "./post/post-list/post-list.component";
 import { PostService } from "./post/post.service";
 import { AppRoutingModule } from "./app-routing.module";
 import { AuthInterceptor } from "./auth/auth-interceptor";
 import { ErrorInterceptor } from "./error-interceptor";
 
 import { ErrorComponent } from "./error/error.component";
-import { MaterialModule } from './material-module';
-import { AuthModule } from './auth/auth.module';
-import { FooterComponent } from './footer/footer.component';
-import { NopagefoundComponent } from './nopagefound/nopagefound.component';
+import { MaterialModule } from "./material-module";
+import { FooterComponent } from "./footer/footer.component";
+import { NopagefoundComponent } from "./nopagefound/nopagefound.component";
+
+/// MODULI
+import { AuthModule } from "./auth/auth.module";
+import { PostModule } from "./post/post.module";
 
 @NgModule({
   declarations: [
     AppComponent,
-    PostReactiveComponent,
+    // PostReactiveComponent,
     HeaderComponent,
-    PostListComponent,
+    // PostListComponent,
     ErrorComponent,
     FooterComponent,
     NopagefoundComponent,
@@ -35,10 +37,11 @@ import { NopagefoundComponent } from './nopagefound/nopagefound.component';
     BrowserModule,
     AppRoutingModule, // za router
     AuthModule,
+    PostModule,
     BrowserAnimationsModule, // material
     ReactiveFormsModule, // REACTIVE FORMS
     HttpClientModule,
-    MaterialModule
+    MaterialModule,
   ],
   providers: [
     PostService,
@@ -52,7 +55,6 @@ import { NopagefoundComponent } from './nopagefound/nopagefound.component';
   entryComponents: [ErrorComponent],
 })
 export class AppModule {}
-
 
 // deeppurple-amber.css
 // indigo-pink.css

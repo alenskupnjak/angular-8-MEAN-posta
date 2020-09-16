@@ -24,30 +24,24 @@ const app = express();
 // definiramo path za file u koji spremamo potrebne varijable
 dotenv.config({ path: '.vscode/config.env' });
 
-
-
 // definiranje porta
 const port = process.env.PORT || 4401;
 
 mongoose
-  .connect(
-    process.env.DATABASE, {
+  .connect(process.env.DATABASE, {
     useNewUrlParser: true,
     useCreateIndex: true,
     useFindAndModify: false,
     useUnifiedTopology: true,
   })
   .then(() => {
-    console.log(
-      `Spojen na MongoDB, PORT= ${process.env.PORT}`
-    );
+    console.log(`Spojen na MongoDB, PORT= ${port}`);
   })
   .catch((err) => {
     console.log('Ne mogu se spojiti 01'.red);
     console.log(err);
   });
 
-  
 // Body parser, bez ovoga ne mozemo slati podatke u req.body , starija verzija!!!!!
 // app.use(express.json());
 // // isto kao i app.use(express.json());  nova verzija
@@ -141,15 +135,13 @@ app.use('/api/posts', postsRoutes);
 app.use('/api/user', userRouter);
 app.use('/', (req, res, next) => {
   res.json({
-    message: ' Evo me na AZURE...radim :), pozdrav.',
+    message: `Evo me na ${req.get('host')} ...radim :),.`,
   });
 });
 
-
-
 // kreiramo server zahtijeve koji stizu
-const server = app.listen(port , () => {
-  console.log(`App listening on port ${process.env.PORT }`.blue);
+const server = app.listen(port, () => {
+  console.log(`App listening on port ${process.env.PORT}`.blue);
 });
 
 // // zatvar program
@@ -160,5 +152,3 @@ const server = app.listen(port , () => {
 //     process.exit(1);
 //   });
 // });
-
-
