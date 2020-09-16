@@ -18,8 +18,8 @@ export class LoginComponent implements OnInit, OnDestroy {
   constructor(public authServices: AuthServices) {}
 
   ngOnInit() {
-    this.authLisenerSubs = this.authServices.getAuthStatusLisener()
-    .subscribe((res) => {
+    this.authLisenerSubs = this.authServices.getAuthStatusLisener().subscribe(
+      (res) => {
         // logiranje uspjelo ili ne TRUE / FALSE
         this.isLoading = res;
       },

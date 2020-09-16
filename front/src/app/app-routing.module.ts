@@ -22,6 +22,7 @@ const routes: Routes = [
   },
   { path: "login", component: LoginComponent },
   { path: "signup", component: SignupComponent },
+  // '**' mora biti zadnji u nizu
   { path: "**", component: NopagefoundComponent },
 ];
 
