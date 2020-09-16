@@ -14,6 +14,9 @@ export class HeaderComponent implements OnInit, OnDestroy {
   private authLisenerSubs: Subscription;
   isLogin = false; // u startu nema logiranog usera
   trenutniKorisnik: string;
+  host: string;
+  vidi:any;
+
 
   constructor(
     public postService: PostService,
@@ -38,11 +41,10 @@ export class HeaderComponent implements OnInit, OnDestroy {
       (res) => {
         console.log("Header, cuo sam o promjeni podataka u Authservisu!", res);
         this.isLogin = res;
-        this.trenutniKorisnik = this.authServices.trenutniKorisnik();
+        this.host = this.authServices.trenutniKorisnik().host;
+        this.trenutniKorisnik  = this.authServices.trenutniKorisnik().usermail;
       },
       (err) => {
-        console.log("--------");
-
         console.log(err);
       }
     );

@@ -5,6 +5,7 @@ import { FormsModule } from "@angular/forms"; // za  [(ngModel)] Template driven
 import { MaterialModule } from "../material-module";
 import { LoginComponent } from "./login/login.component";
 import { SignupComponent } from "./signup/signup.component";
+import { AuthRoutingModule } from './auth.routing.module';
 
 @NgModule({
   declarations: [LoginComponent, SignupComponent],
@@ -12,6 +13,7 @@ import { SignupComponent } from "./signup/signup.component";
     CommonModule, // zbog ngIF, ngFor..... mora biti
     MaterialModule, // material module se dupla
     FormsModule, // Template driven forme [(ngModel)]
+    AuthRoutingModule
   ],
 })
 export class AuthModule {}

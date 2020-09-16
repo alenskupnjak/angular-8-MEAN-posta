@@ -6,9 +6,7 @@ import { ReactiveFormsModule } from "@angular/forms"; // za Reactive driven form
 
 // Ovdje dodajemo komponente
 import { AppComponent } from "./app.component";
-// import { PostReactiveComponent } from "./post/post-reactive-driven-form/post-reactive.component";
 import { HeaderComponent } from "./header/header.component";
-// import { PostListComponent } from "./post/post-list/post-list.component";
 import { PostService } from "./post/post.service";
 import { AppRoutingModule } from "./app-routing.module";
 import { AuthInterceptor } from "./auth/auth-interceptor";
@@ -20,15 +18,13 @@ import { FooterComponent } from "./footer/footer.component";
 import { NopagefoundComponent } from "./nopagefound/nopagefound.component";
 
 /// MODULI
-import { AuthModule } from "./auth/auth.module";
+// import { AuthModule } from "./auth/auth.module"; isklujčen zbog Layzi loadinga
 import { PostModule } from "./post/post.module";
 
 @NgModule({
   declarations: [
     AppComponent,
-    // PostReactiveComponent,
     HeaderComponent,
-    // PostListComponent,
     ErrorComponent,
     FooterComponent,
     NopagefoundComponent,
@@ -36,7 +32,7 @@ import { PostModule } from "./post/post.module";
   imports: [
     BrowserModule,
     AppRoutingModule, // za router
-    AuthModule,
+    // AuthModule,
     PostModule,
     BrowserAnimationsModule, // material
     ReactiveFormsModule, // REACTIVE FORMS

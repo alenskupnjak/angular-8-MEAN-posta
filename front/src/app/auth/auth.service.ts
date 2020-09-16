@@ -13,6 +13,8 @@ export class AuthServices {
   private userIdTrenutnoLogiran: string;
   private userEmail: string;
   private tokenTimer: any;
+  private host: string;
+  private podatak: any;
   // registrira radnju LOGIN i LOGOUT
   private authStatusLisener = new Subject<boolean>();
 
@@ -28,7 +30,11 @@ export class AuthServices {
   }
 
   trenutniKorisnik() {
-    return this.userEmail;
+    this.podatak = {
+      usermail: this.userEmail,
+      host: this.host,
+    };
+    return this.podatak;
   }
 
   // definira status logiranja: TRUE ili FALSE
@@ -72,6 +78,7 @@ export class AuthServices {
         expiresIn: number;
         loginUser: string;
         loginUserName: string;
+        host: string;
       }>(`${environment.path}/api/user/login`, authData)
       .subscribe(
         (res) => {
@@ -87,6 +94,7 @@ export class AuthServices {
             // trenutno logiran korisnik
             this.userIdTrenutnoLogiran = res.loginUser;
             this.userEmail = res.loginUserName;
+            this.host = res.host;
 
             // ovo se aktivira samo kod LOGIN i LOGOUT.
             // saljem podatke svim componentama  koje su AKTIVNE!! da je neko logiran
@@ -103,7 +111,8 @@ export class AuthServices {
               token,
               expirationDate,
               this.userIdTrenutnoLogiran,
-              this.userEmail
+              this.userEmail,
+              this.host
             );
             this.router.navigate(["/"]);
           }
@@ -135,8 +144,10 @@ export class AuthServices {
     token: string,
     expirationDate: Date,
     userID: string,
-    email: string
+    email: string,
+    host: string
   ) {
+    localStorage.setItem("hostPostaAngular", host);
     localStorage.setItem("tokenPostaAngular", token);
     localStorage.setItem("emailPostaAngular", email);
     localStorage.setItem(
@@ -151,6 +162,7 @@ export class AuthServices {
     localStorage.removeItem("expirationPostaAmgular");
     localStorage.removeItem("userIdPostaAngular");
     localStorage.removeItem("emailPostaAngular");
+    localStorage.removeItem("hostPostaAngular");
   }
 
   //
