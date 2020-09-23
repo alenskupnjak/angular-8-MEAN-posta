@@ -5,7 +5,9 @@
 
   <ul>
     <li *ngIf="isLogin">
-      <a mat-button routerLinkActive="mat-accent">{{host}}, User: {{trenutniKorisnik}}</a>
+      <a mat-button routerLinkActive="mat-accent">{{host}}, <span class="material-icons">
+        person
+        </span> {{trenutniKorisnik}}</a>
     </li>
     <li *ngIf="isLogin">
       <a mat-button routerLink="/createRDF" routerLinkActive="mat-accent">Reactive Form</a>

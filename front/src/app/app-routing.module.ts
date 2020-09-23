@@ -22,7 +22,7 @@ const routes: Routes = [
   {
     path: "auth",
     loadChildren: () => import('./auth/auth.module').then((m) => m.AuthModule),
-    // loadChildren: './auth/auth.module#AuthModule',
+    // loadChildren: './auth/auth.module#AuthModule', staro rijesenje
   },
   // '**' mora biti zadnji u nizu
   { path: "**", component: NopagefoundComponent },

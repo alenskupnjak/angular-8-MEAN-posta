@@ -26,7 +26,6 @@ export class PostService {
   constructor(public http: HttpClient, private router: Router) {}
 
   // *********************************************
-  //
   // povlačenje podataka sa mreže
   getPosts(postPerPage: number, currentPage: number) {
     this.postPerPageServis = postPerPage;
@@ -58,14 +57,20 @@ export class PostService {
           };
         })
       )
-      .subscribe((dataPost) => {
-        this.posts = dataPost.posts;
-        // saljemo signap u program...
-        this.postUpdated.next({
-          posts: [...this.posts],
-          brojDokumenata: dataPost.brojDokumenata,
-        });
-      });
+      .subscribe(
+        (dataPost) => {
+          this.posts = dataPost.posts;
+          // saljemo signap u program...
+          this.postUpdated.next({
+            posts: [...this.posts],
+            brojDokumenata: dataPost.brojDokumenata,
+          });
+        },
+        (error) => {
+          //Error callback
+          console.log(error, "error caught in component  xxxxxxxxx");
+        }
+      );
   }
 
   // *********************************************

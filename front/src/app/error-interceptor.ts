@@ -18,7 +18,7 @@ export class ErrorInterceptor implements HttpInterceptor {
   intercept(req: HttpRequest<any>, next: HttpHandler) {
     return next.handle(req).pipe(
       catchError((error: HttpErrorResponse) => {
-        let errormessage = "Dogodila se greška...";
+        let errormessage = "Dogodila se greška prilikom pokušaja spajanja na bazu.";
         if (error.error.message) {
           errormessage = error.error.message;
         }

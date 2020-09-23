@@ -7,6 +7,7 @@ import { MatExpansionModule } from "@angular/material/expansion";
 import { MatProgressSpinnerModule } from "@angular/material/progress-spinner";
 import { MatPaginatorModule } from "@angular/material/paginator";
 import { MatDialogModule } from "@angular/material/dialog";
+import { MatIconModule } from '@angular/material/icon';
 
 
 @NgModule({
@@ -19,6 +20,7 @@ import { MatDialogModule } from "@angular/material/dialog";
     MatProgressSpinnerModule, // material
     MatPaginatorModule, // material, paginacija
     MatDialogModule, // dialog on ekranu
+    MatIconModule // ikone
   ],
   exports: [
     MatInputModule, // omogučava nam pristup komponentama
@@ -29,6 +31,7 @@ import { MatDialogModule } from "@angular/material/dialog";
     MatProgressSpinnerModule, // material
     MatPaginatorModule, // material, paginacija
     MatDialogModule, // dialog on ekranu
+    MatIconModule  // ikone
   ]
 
 })
