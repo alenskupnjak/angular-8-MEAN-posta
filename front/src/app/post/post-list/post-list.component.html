@@ -3,7 +3,7 @@
   <mat-expansion-panel *ngFor="let data of postaUlazna; let i = index">
 
     <mat-expansion-panel-header>
-      {{i}} - {{ data.title}}
+      {{i +1}} - {{ data.title}}
     </mat-expansion-panel-header>
     <div class="post-image">
       <img [src]="data.imagePath" [alt]="data.title">
@@ -11,7 +11,7 @@
     <mat-panel-description>
       {{ data.content}}
     </mat-panel-description>
-
+    <div  class="autor"  *ngIf="!(trenutnoLogiranKorisnikId === data.creator)">Samo autor može mijenjati sadržaj.</div>
     <mat-action-row *ngIf="isLogin && trenutnoLogiranKorisnikId === data.creator">
       <a mat-button color="primary" [routerLink]="['/edit', data.id]">EDIT</a>
       <button mat-button color="warn" (click)="onDelete(data.id)">DELETE</button>

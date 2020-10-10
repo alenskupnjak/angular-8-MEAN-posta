@@ -13,7 +13,7 @@ export class AuthServices {
   private userIdTrenutnoLogiran: string;
   private userEmail: string;
   private tokenTimer: any;
-  private host: string;
+  private hostLink: string;
   private podatak: any;
   // registrira radnju LOGIN i LOGOUT
   private authStatusLisener = new Subject<boolean>();
@@ -32,7 +32,7 @@ export class AuthServices {
   trenutniKorisnik() {
     this.podatak = {
       usermail: this.userEmail,
-      host: this.host,
+      hostLink: this.hostLink,
     };
     return this.podatak;
   }
@@ -78,7 +78,7 @@ export class AuthServices {
         expiresIn: number;
         loginUser: string;
         loginUserName: string;
-        host: string;
+        hostLink: string;
       }>(`${environment.path}/api/user/login`, authData)
       .subscribe(
         (res) => {
@@ -94,7 +94,8 @@ export class AuthServices {
             // trenutno logiran korisnik
             this.userIdTrenutnoLogiran = res.loginUser;
             this.userEmail = res.loginUserName;
-            this.host = res.host;
+            this.hostLink = res.hostLink;
+            console.log("res.host= qqqqq", res.hostLink);
 
             // ovo se aktivira samo kod LOGIN i LOGOUT.
             // saljem podatke svim componentama  koje su AKTIVNE!! da je neko logiran
@@ -112,7 +113,7 @@ export class AuthServices {
               expirationDate,
               this.userIdTrenutnoLogiran,
               this.userEmail,
-              this.host
+              this.hostLink
             );
             this.router.navigate(["/"]);
           }
@@ -128,8 +129,8 @@ export class AuthServices {
   // Logout
   logout() {
     this.token = null;
-    this.host = null;
-    
+    this.hostLink = null;
+
     this.isLogin = false;
     this.userIdTrenutnoLogiran = null;
     // saljam signal u header da sam odlogiran
@@ -147,9 +148,9 @@ export class AuthServices {
     expirationDate: Date,
     userID: string,
     email: string,
-    host: string
+    hostLink: string
   ) {
-    localStorage.setItem("hostPostaAngular", host);
+    localStorage.setItem("hostPostaAngular", hostLink);
     localStorage.setItem("tokenPostaAngular", token);
     localStorage.setItem("emailPostaAngular", email);
     localStorage.setItem(
@@ -185,13 +186,14 @@ export class AuthServices {
       this.setAuthTimer(expiresIn / 1000);
       this.userIdTrenutnoLogiran = authInformation.userId;
       this.userEmail = authInformation.email;
+      this.hostLink = authInformation.hostLink;
       this.authStatusLisener.next(true);
     }
   }
 
   // vrijeme u sekunadama
   private setAuthTimer(duration: number) {
-    console.log("Seting timer= " + duration);
+    console.log("Seting timer (sec)= " + duration);
 
     // nakon sto protekne vrijeme (expiresInDuration), automatski odlogira korisnika
     this.tokenTimer = setTimeout(() => {
@@ -204,7 +206,7 @@ export class AuthServices {
     const expirationDate = localStorage.getItem("expirationPostaAmgular");
     const userId = localStorage.getItem("userIdPostaAngular");
     const email = localStorage.getItem("emailPostaAngular");
-    const host = localStorage.getItem("hostPostaAngular");
+    const hostLink = localStorage.getItem("hostPostaAngular");
     if (!token || !expirationDate || !userId) {
       return;
     }
@@ -214,7 +216,7 @@ export class AuthServices {
       expirationDate: new Date(expirationDate),
       userId: userId,
       email: email,
-      host:host
+      hostLink: hostLink,
     };
   }
 }

@@ -13,9 +13,10 @@ export class HeaderComponent implements OnInit, OnDestroy {
   private postsSub: Subscription;
   private authLisenerSubs: Subscription;
   isLogin = false; // u startu nema logiranog usera
-  trenutniKorisnik: string = "";
-  host: string ='';
+  private trenutniKorisnik: string;
+  hostLink: string = "";
   vidi: any;
+  most: string;
 
   constructor(
     public postService: PostService,
@@ -24,10 +25,9 @@ export class HeaderComponent implements OnInit, OnDestroy {
 
   ngOnInit() {
     this.isLogin = this.authServices.getIsAuth();
-    console.log(this.authServices.trenutniKorisnik());
 
-    if(this.authServices.trenutniKorisnik()) {
-      this.host = this.authServices.trenutniKorisnik().host;
+    if (this.authServices.trenutniKorisnik()) {
+      this.hostLink = this.authServices.trenutniKorisnik().hostLink;
       this.trenutniKorisnik = this.authServices.trenutniKorisnik().usermail;
     }
 
@@ -47,15 +47,15 @@ export class HeaderComponent implements OnInit, OnDestroy {
       (res) => {
         console.log("Header, cuo sam o promjeni podataka u Authservisu!", res);
         this.isLogin = res;
-        this.host = this.authServices.trenutniKorisnik().host;
+        this.hostLink = this.authServices.trenutniKorisnik().hostLink;
         this.trenutniKorisnik = this.authServices.trenutniKorisnik().usermail;
+        console.log("this.trenutniKorisnik=", this.trenutniKorisnik);
+        console.log("this.host=", this.hostLink);
       },
       (err) => {
         console.log(err);
       }
     );
-
-    this.trenutniKorisnik = this.authServices.trenutniKorisnik();
   }
 
   //

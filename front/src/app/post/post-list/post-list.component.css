@@ -18,3 +18,8 @@
 mat-paginator {
   margin-top:2rem;
 }
+
+.autor {
+  color: blue;
+  text-align: right;
+}

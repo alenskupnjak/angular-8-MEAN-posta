@@ -68,12 +68,14 @@ exports.loginUser = (req, res, next) => {
         { expiresIn: process.env.JWT_EXPIRE }
       );
  
+      console.log('req.get(host)',req.get('host'));
+      
       res.status(200).json({
         token: token,
         expiresIn: 3600,
         loginUser: userLogin._id,
         loginUserName: userLogin.email,
-        host:req.get('host')
+        hostLink :req.get('host')
       });
     })
     .catch((err) => {
