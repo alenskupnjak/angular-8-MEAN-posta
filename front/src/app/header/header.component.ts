@@ -13,7 +13,7 @@ export class HeaderComponent implements OnInit, OnDestroy {
   private postsSub: Subscription;
   private authLisenerSubs: Subscription;
   isLogin = false; // u startu nema logiranog usera
-  private trenutniKorisnik: string;
+  trenutniKorisnik: string;
   hostLink: string = "";
   vidi: any;
   most: string;

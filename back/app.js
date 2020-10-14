@@ -135,7 +135,7 @@ app.use('/api/posts', postsRoutes);
 app.use('/api/user', userRouter);
 app.use('/', (req, res, next) => {
   res.json({
-    message: `Evo me na ${req.get('host')} ...radim :),. i radim...`,
+    message: `Evo me na ${req.get('host')} ...radim :),. i radim... 10/10/20`,
   });
 });
 

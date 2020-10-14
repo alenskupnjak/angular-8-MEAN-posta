@@ -8,11 +8,13 @@ import { AuthServices } from "./auth/auth.service";
 })
 export class AppComponent implements OnInit {
   constructor(private authServices: AuthServices) {}
+
   ngOnInit() {
+    // Automatski ispisuje mod u kojem se radi
     if (isDevMode()) {
       console.log("Development Mode!");
     } else {
-      console.log("Cool. Production!");
+      console.log("Super. Production mode!");
     }
 
     this.authServices.autoAuthUser();

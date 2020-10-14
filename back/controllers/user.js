@@ -75,7 +75,7 @@ exports.loginUser = (req, res, next) => {
         expiresIn: 3600,
         loginUser: userLogin._id,
         loginUserName: userLogin.email,
-        hostLink :req.get('host')
+        hostLink : req.get('host')
       });
     })
     .catch((err) => {

@@ -30,7 +30,8 @@
       mat-raised-button
       color="primary"
       type="submit"
-      *ngIf="!isLoading">Login
+      *ngIf="!isLoading"
+      [disabled]="loginForm.invalid">Login
     </button>
   </form>
 </mat-card>
