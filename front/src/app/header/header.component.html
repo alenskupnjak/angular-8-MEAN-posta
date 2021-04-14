@@ -5,10 +5,10 @@
 
   <ul>
     <li *ngIf="isLogin">
-      <a mat-button routerLinkActive="mat-accent">{{ hostLink }} <span class="material-icons">person</span> {{ trenutniKorisnik }}</a>
+      <a mat-button routerLink="/createRDF" routerLinkActive="mat-accent">Unos</a>
     </li>
     <li *ngIf="isLogin">
-      <a mat-button routerLink="/createRDF" routerLinkActive="mat-accent">Reactive Form</a>
+      <a mat-button routerLinkActive="mat-accent">{{ hostLink }} <span class="material-icons">person</span> {{ trenutniKorisnik }}</a>
     </li>
     <li *ngIf="!isLogin">
       <a mat-button routerLink="auth/login" routerLinkActive="mat-accent">Login</a>

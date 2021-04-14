@@ -130,7 +130,6 @@ export class AuthServices {
   logout() {
     this.token = null;
     this.hostLink = null;
-
     this.isLogin = false;
     this.userIdTrenutnoLogiran = null;
     // saljam signal u header da sam odlogiran
